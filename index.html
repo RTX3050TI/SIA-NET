@@ -1,283 +1,537 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Carta Especial 💖</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
-        }
-
-        h2 {
-            color: #e91e63;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            border: 2px solid #e0e0e0;
-            font-family: inherit;
-            font-size: 16px;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #e91e63;
-            box-shadow: 0 0 5px rgba(233, 30, 99, 0.3);
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #e91e63;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #c2185b;
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        #resultado {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 10px;
-            display: none;
-        }
-
-        #resultado.visible {
-            display: block;
-        }
-
-        #resultado a {
-            display: block;
-            margin-top: 10px;
-            word-break: break-all;
-            color: #e91e63;
-            text-decoration: none;
-        }
-
-        #resultado a:hover {
-            text-decoration: underline;
-        }
-
-        .error {
-            color: #d32f2f;
-            padding: 10px;
-            background: #ffebee;
-            border-radius: 5px;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .error.visible {
-            display: block;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SIA-Net — I.E. N.° 86002 «Jorge Basadre Grohmann»</title>
+<style>
+:root{--side:#0f172a;--azul:#1e3a8a;--azul2:#2749b5;--bg:#f8fafc;--bd:#e2e8f0;--tx:#0f172a;--mu:#64748b;--ok:#166534;--okb:#dcfce7;--wa:#854d0e;--wab:#fef9c3;--ba:#991b1b;--bab:#fee2e2;--r:10px;--sp:16px;--sh:0 1px 3px rgba(15,23,42,.08),0 1px 2px rgba(15,23,42,.05)}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;overflow-x:hidden}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx);line-height:1.45}
+h1,h2,h3{margin:0}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;background:#fff;padding:8px;z-index:99}
+:focus-visible{outline:3px solid #60a5fa;outline-offset:2px}
+.btn{font:inherit;font-weight:600;border:1px solid var(--azul);background:var(--azul);color:#fff;padding:9px 14px;border-radius:8px;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--azul2)}.btn.sec{background:#fff;color:var(--azul)}.btn.sec:hover{background:#eff6ff}
+.btn.bad{background:#b91c1c;border-color:#b91c1c}.btn.sm{padding:5px 10px;font-size:.85rem}
+.btn:disabled{opacity:.45;cursor:not-allowed}.btn:active:not(:disabled){transform:translateY(1px)}
+input,select,textarea{font:inherit;padding:8px 10px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:var(--tx);max-width:100%}
+input:disabled,select:disabled{background:#f1f5f9;cursor:not-allowed}
+.inv{border-color:#dc2626!important;background:#fef2f2}
+.campo{display:flex;flex-direction:column;gap:4px;min-width:130px}.campo label{font-size:.8rem;font-weight:600;color:var(--mu)}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.78rem;font-weight:700}
+.b-ok{background:var(--okb);color:var(--ok)}.b-warn{background:var(--wab);color:var(--wa)}.b-bad{background:var(--bab);color:var(--ba)}.b-azul{background:#dbeafe;color:var(--azul)}
+.card{background:#fff;border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);padding:var(--sp)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* Login */
+#login{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr}
+.vis{position:relative;overflow:hidden;color:#fff;display:flex;align-items:flex-end;padding:48px;background:linear-gradient(135deg,#1e3a8a,#0f172a)}
+.vis::before{content:"";position:absolute;inset:-20px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%231e3a8a'/%3E%3Cpath d='M30 280V150l85-55 85 55v130zM220 280V120l75-45 75 45v160z' fill='%23475569'/%3E%3C/svg%3E") center/cover,linear-gradient(135deg,#1e3a8a,#0f172a);filter:blur(6px)}
+.vis::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,23,42,.35),rgba(15,23,42,.85))}
+.vis>div{position:relative;z-index:1;max-width:420px}.vis h2{font-size:1.8rem;margin-bottom:8px}
+.lf{display:flex;align-items:center;justify-content:center;padding:32px}
+.lf form{width:100%;max-width:400px;display:flex;flex-direction:column;gap:14px}
+.marca{font-size:1.9rem;font-weight:800;color:var(--azul)}
+.aviso{background:var(--wab);color:var(--wa);padding:10px 12px;border-radius:8px;font-size:.88rem}
+.err{color:var(--ba);font-size:.88rem;min-height:1.2em}
+/* App */
+#app{display:flex;height:100vh;height:100dvh;overflow:hidden}#app.entra{animation:ent .4s ease}
+@keyframes ent{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#side{width:260px;background:var(--side);color:#e2e8f0;display:flex;flex-direction:column;padding:16px;height:100%;flex:none;transition:transform .25s}
+.logo{font-size:1.4rem;font-weight:800;color:#fff;padding:4px 8px 16px}.logo span{color:#60a5fa}
+#nav{display:flex;flex-direction:column;gap:4px;flex:1;overflow:auto}
+.nav{display:flex;gap:10px;align-items:center;background:none;border:0;color:#cbd5e1;font:inherit;padding:10px 12px;border-radius:8px;cursor:pointer;text-align:left}
+.nav:hover{background:#1e293b;color:#fff}.nav[aria-current=page]{background:var(--azul);color:#fff;font-weight:700}
+.nav svg,.ico svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.usr{border-top:1px solid #1e293b;padding-top:12px;display:flex;flex-direction:column;gap:8px;font-size:.9rem}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;height:100%;overflow-y:auto}
+.top{display:flex;align-items:center;gap:12px;padding:12px 24px;background:#fff;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5;flex-wrap:wrap}
+.top h1{font-size:1.2rem;flex:1;min-width:120px;color:var(--azul)}
+#menuBtn{display:none}
+.bell{position:relative}.bell .n{position:absolute;top:-6px;right:-6px;background:#dc2626;color:#fff;border-radius:99px;font-size:.7rem;padding:1px 6px}
+#panelC{position:fixed;right:16px;top:60px;width:min(360px,calc(100vw - 32px));max-height:70vh;overflow:auto;z-index:20}
+#main{padding:24px;outline:0}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--sp);margin-bottom:var(--sp)}
+.stat b{display:block;font-size:2rem;color:var(--azul)}.stat span{color:var(--mu);font-size:.9rem}
+.fil{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:var(--sp)}
+.tw{overflow:auto;max-height:max(260px,calc(100dvh - 340px));border:1px solid var(--bd);border-radius:var(--r);background:#fff;box-shadow:var(--sh)}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--bd);font-size:.9rem}
+th{background:#f1f5f9;color:#334155;position:sticky;top:0}tbody tr:hover{background:#f8fafc}
+.pg{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:12px}
+.vacio{padding:32px;text-align:center;color:var(--mu)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--sp)}
+.card h3{font-size:1rem;margin-bottom:4px}.card small{color:var(--mu)}.card p{margin:8px 0 0;white-space:pre-wrap}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{background:#fff;border-radius:12px;width:min(520px,100%);max-height:90vh;overflow:auto;padding:20px}
+.mh{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0}dt{color:var(--mu)}dd{margin:0;font-weight:600}
+#toasts{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:99}
+.toast{padding:10px 14px;border-radius:8px;color:#fff;background:#166534;box-shadow:var(--sh);animation:ent .25s}.toast.error{background:#b91c1c}.toast.info{background:var(--azul)}
+#ov{display:none}
+@media(max-width:900px){#login{grid-template-columns:1fr}.vis{min-height:220px;padding:24px}
+#side{position:fixed;left:0;top:0;z-index:30;transform:translateX(-100%)}#side.open{transform:none}
+#ov.show{display:block;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:25}
+#menuBtn{display:inline-block}.top{padding:10px 14px}#main{padding:14px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.simb{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.marca{display:flex;align-items:center;gap:10px}.vis .simb{width:48px;height:48px;margin-bottom:10px}
+.logo{display:flex;align-items:center;gap:10px;padding-bottom:16px}.logo svg{color:#60a5fa;width:30px;height:30px}.logo small{display:block;font-size:.68rem;font-weight:500;color:#94a3b8;letter-spacing:.02em}
+.pie{font-size:.75rem;color:var(--mu);text-align:center;padding:14px 16px;margin:0}.pie .btn{margin-top:6px}
+.sobre p{margin:0 0 10px}
+.logo-img{width:34px;height:34px;object-fit:contain;background:#fff;border-radius:8px;padding:3px;flex:none}.vis .logo-img{width:56px;height:56px;margin-bottom:10px}.logo .logo-img{width:32px;height:32px}
+</style>
 </head>
-
 <body>
-    <div class="container">
-        <h2>💌 Crear Carta Especial</h2>
-        
-        <form id="cartaForm">
-            <div class="form-group">
-                <label for="para">Nombre de quien recibe</label>
-                <input type="text" id="para" name="para" placeholder="Ej: María" required maxlength="50">
-            </div>
+<a class="skip" href="#main">Saltar al contenido</a>
 
-            <div class="form-group">
-                <label for="de">Tu nombre</label>
-                <input type="text" id="de" name="de" placeholder="Ej: Juan" required maxlength="50">
-            </div>
+<section id="login" aria-label="Ingreso">
+  <div class="vis"><div><svg class="simb" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5c4-1 7 0 10 2 3-2 6-3 10-2v13c-4-1-7 0-10 2-3-2-6-3-10-2z"/><path d="M12 7v13"/></svg><p style="margin:0;letter-spacing:.08em;font-size:.85rem">INSTITUCIÓN EDUCATIVA</p><h2>I.E. N.° 86002 “Jorge Basadre Grohmann”</h2><p>Nicrupampa · Independencia · Huaraz · Áncash</p><p style="opacity:.85">Matrícula, asistencia, calificaciones y comunicados de Secundaria en un solo lugar.</p></div></div>
+  <div class="lf">
+    <form id="fLogin" novalidate>
+      <div class="marca"><svg class="simb" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5c4-1 7 0 10 2 3-2 6-3 10-2v13c-4-1-7 0-10 2-3-2-6-3-10-2z"/><path d="M12 7v13"/></svg>SIA-Net</div>
+      <p style="margin:0;color:var(--mu)"><strong>Sistema de Información Académica</strong><br>I.E. N.° 86002 “Jorge Basadre Grohmann” · Secundaria</p>
+      <div class="campo"><label for="rolSel">Rol de ingreso (obligatorio)</label>
+        <select id="rolSel" required aria-describedby="rolErr"><option value="">Selecciona un rol…</option><option>ADMINISTRATIVO</option><option>DOCENTE</option><option>APODERADO</option></select></div>
+      <div class="err" id="rolErr"></div>
+      <button class="btn" type="submit">Ingresar a la demostración</button>
+      <div class="aviso" role="note">Demostración académica con datos ficticios. Los cambios se conservan hasta recargar la página</div>
+      <button class="btn sec sobre" type="button">Sobre la institución</button>
+      <p class="pie">Prototipo académico · Datos ficticios · Sin conexión a los sistemas oficiales de la institución. No es una plataforma oficial ni cuenta con autorización institucional.</p>
+    </form>
+  </div>
+</section>
 
-            <div class="form-group">
-                <label for="tipo">Tipo de relación</label>
-                <select id="tipo" name="tipo">
-                    <option value="esposa">Esposa ❤️</option>
-                    <option value="novia">Novia 💕</option>
-                    <option value="amiga">Amiga 🌸</option>
-                </select>
-            </div>
+<div id="app" hidden>
+  <div id="ov"></div>
+  <aside id="side" aria-label="Barra lateral">
+    <div class="logo"><svg class="simb" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5c4-1 7 0 10 2 3-2 6-3 10-2v13c-4-1-7 0-10 2-3-2-6-3-10-2z"/><path d="M12 7v13"/></svg><div>SIA<span>-Net</span><small>I.E. 86002 · J. Basadre G.</small></div></div>
+    <nav id="nav" aria-label="Módulos"></nav>
+    <div class="usr"><strong id="uNom"></strong><span id="uDet" style="color:#94a3b8"></span><span id="uRol" class="badge b-azul" style="align-self:flex-start"></span>
+      <button class="btn sec" id="btnSalir" type="button">Cerrar sesión</button></div>
+  </aside>
+  <div class="col">
+    <header class="top">
+      <button class="btn sec" id="menuBtn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="side">☰</button>
+      <h1 id="titulo">Inicio</h1>
+      <div class="campo" style="min-width:200px;flex:1;max-width:340px"><label class="vh" for="busq">Búsqueda</label>
+        <input id="busq" type="search" autocomplete="off"><small id="busqAy" style="color:var(--mu)"></small></div>
+      <button class="btn sec" id="btnPdf" type="button" hidden>Descargar PDF</button>
+      <div class="bell"><button class="btn sec" id="bell" type="button" aria-label="Notificaciones" aria-expanded="false" aria-controls="panelC">🔔</button><span class="n" id="bellN" hidden></span></div>
+    </header>
+    <div id="panelC" class="card" hidden role="region" aria-label="Comunicados recientes"></div>
+    <main id="main" tabindex="-1"></main>
+    <footer class="pie">Prototipo académico · Datos ficticios · Sin conexión a los sistemas oficiales de la institución<br><button class="btn sm sec sobre" type="button">Sobre la institución</button></footer>
+  </div>
+</div>
+<div id="toasts" role="status" aria-live="polite"></div>
 
-            <div class="form-group">
-                <label for="fecha">Fecha de expiración (opcional)</label>
-                <input type="date" id="fecha" name="fecha">
-            </div>
+<script>
+/* ============ SIA-Net: prototipo académico, todo en memoria ============ */
+/* LOGO INSTITUCIONAL (opcional): pega aquí la URL (https://...) o una imagen data: de un logo que tengas autorización
+   de usar. Si queda vacío o la imagen no carga, se mantiene el símbolo de libro integrado. */
+const LOGO_URL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs0nvgKzHVLsqVtUKJb37McKGwcChzAIOUP8V8G5qigWEaweRqqFHKVEs&s=10';
+var estudiantesDB, docentesDB, comunicadosDB, justificacionesDB, asistenciasDB, calificacionesDB; // var => visibles en window
 
-            <div class="form-group">
-                <label for="youtube">Video de YouTube (opcional)</label>
-                <input type="text" id="youtube" name="youtube" placeholder="Pega el link: https://www.youtube.com/watch?v=...">
-            </div>
+const CURSOS = ['Matemática','Comunicación','Ciencia y Tecnología','Historia','Inglés','Educación Física'];
+const SECS = ['A','B','C'];
+const hoy = () => { const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+const fd = s => s.split('-').reverse().join('/');
+const GR = g => g + '.º de secundaria';
+const norm = s => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const $ = (s, r=document) => r.querySelector(s);
+const nombreEst = e => e.apellidos + ', ' + e.nombres;
+const estPorId = id => estudiantesDB.find(e => e.id === id);
 
-            <button type="submit">✨ Generar Enlace ✨</button>
-        </form>
+/* Helper DOM seguro: todo texto entra por textContent/nodos de texto; los eventos usan addEventListener. */
+function h(tag, a = {}, ...c) {
+  const e = document.createElement(tag);
+  for (const k in a) { const v = a[k];
+    if (k === 'class') e.className = v; else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) e.setAttribute(k, v === true ? '' : v); }
+  c.flat().forEach(x => x != null && x !== false && e.append(x.nodeType ? x : document.createTextNode(x)));
+  return e;
+}
+const badge = (t, k) => h('span', {class:'badge b-'+k, text:t});
+const KB = {Matriculado:'ok',Retirado:'bad',Presente:'ok',Tardanza:'warn',Ausente:'bad',Pendiente:'warn',Aprobada:'ok',Rechazada:'bad'};
+const bEstado = t => badge(t, KB[t] || 'azul');
+const campo = (id, lbl, ctl) => h('div', {class:'campo'}, h('label', {for:id, text:lbl}), ctl);
+const sel = (id, opts, val, fn, dis) => { const s = h('select', {id, disabled:!!dis, onchange:e => fn(e.target.value)}, opts.map(([v,t]) => h('option', {value:v, text:t}))); s.value = val; return s; };
+const tabla = (heads, rows) => h('div', {class:'tw'}, h('table', {}, h('thead', {}, h('tr', {}, heads.map(t => h('th', {scope:'col', text:t})))), h('tbody', {}, rows.map(r => h('tr', {}, r.map(x => h('td', {}, x)))))));
+const vacio = t => h('div', {class:'tw'}, h('div', {class:'vacio', text:t}));
+const ICO = {inicio:'<path d="M3 11l9-8 9 8v10H3z"/>',matriculas:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',docentes:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-4 3-6 6-6s6 2 6 6"/><path d="M17 8h4M17 12h4"/>',asistencias:'<rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 12l3 3 5-6"/>',calificaciones:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',justificaciones:'<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/>',comunicados:'<path d="M3 11v3l14 5V6L3 11z"/><path d="M7 14v5"/>'};
+const ico = k => { const s = h('span', {class:'ico','aria-hidden':'true'}); s.innerHTML = '<svg viewBox="0 0 24 24">' + ICO[k] + '</svg>'; return s; }; // SVG estático y confiable
 
-        <div id="resultado"></div>
-        <div id="error" class="error" role="alert"></div>
-    </div>
+/* ---------- Generación de datos (determinista, una sola vez) ---------- */
+function generarDatosIniciales() {
+  let s = 20260; // PRNG simple con semilla fija para resultados repetibles
+  const rnd = () => { s = (s + 0x6D2B79F5) | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const pick = a => a[Math.floor(rnd() * a.length)];
+  const NOM = ['José','Luis','Carlos','Miguel','Diego','Juan','Jorge','Andrés','Fabrián','Renzo','María','Lucía','Rosa','Ana','Carmen','Valeria','Camila','Fiorella','Daniela','Milagros','Sofía','Kevin'];
+  const APE = ['Quispe','Huamán','Flores','Rojas','Mamani','Condori','Torres','Vargas','Castillo','Ramos','Sánchez','Gutiérrez','Chávez','Paredes','Salazar','Díaz','Mendoza','Ríos','Espinoza','Cruz'];
+  estudiantesDB = []; let n = 0;
+  for (let g = 1; g <= 5; g++) for (const sec of SECS) for (let k = 0; k < 22; k++) { // 5 grados x 3 secciones x 22 = 330
+    n++; const ape = pick(APE) + ' ' + pick(APE);
+    estudiantesDB.push({ id:'E' + String(n).padStart(3,'0'),
+      dni:String((30000000 + n * 104729) % 60000000).padStart(8,'0'), // 104729 es primo => DNI únicos
+      nombres:pick(NOM) + ' ' + pick(NOM), apellidos:ape, grado:g, seccion:sec,
+      estado:n % 23 === 0 ? 'Retirado' : 'Matriculado', tutor:pick(NOM) + ' ' + ape.split(' ')[0] + ' ' + pick(APE) }); // ~1 retirado por aula
+  }
+  const esp = ['Matemática','Comunicación','Ciencia y Tecnología','Historia','Inglés','Educación Física','Arte','Educación para el Trabajo','Formación Ciudadana','Religión'];
+  const aul = [['3A','4B'],['3A','1A'],['3A','2C'],['3A','5A'],['3A','4C'],['1B','2B'],['2A','3B'],['1C','5B'],['4A','5C'],['3C','2B']];
+  docentesDB = esp.map((e, i) => ({ id:'D' + String(i+1).padStart(2,'0'), nombres:pick(NOM), apellidos:pick(APE) + ' ' + pick(APE), especialidad:e, aulas:aul[i] }));
+  docentesDB[0].nombres = 'Elena'; docentesDB[0].apellidos = 'Paredes Ríos'; // docente de la sesión demo
+  comunicadosDB = [
+    {id:'C1',titulo:'Cronograma de matrícula de secundaria',contenido:'Se informa el cronograma ficticio de matrícula 2027 para 1.º a 5.º de secundaria: del 14 al 18 de diciembre, de 8:00 a. m. a 1:00 p. m., en la oficina de Secretaría.',fecha:'2026-10-05',responsable:'Secretaría (ficticia)',roles:['ADMINISTRATIVO','DOCENTE','APODERADO']},
+    {id:'C2',titulo:'Reunión de padres de familia',contenido:'Se convoca a los padres de familia de secundaria a la reunión ficticia del viernes 23 de octubre, a las 6:00 p. m., para presentar el avance del bimestre.',fecha:'2026-10-08',responsable:'Coordinación de Tutoría (ficticia)',roles:['ADMINISTRATIVO','APODERADO']},
+    {id:'C3',titulo:'Evaluaciones bimestrales',contenido:'Las evaluaciones del IV bimestre se aplicarían del 9 al 13 de noviembre. Los docentes registran las notas hasta el 16 de noviembre (fechas de ejemplo).',fecha:'2026-10-09',responsable:'Coordinación académica (ficticia)',roles:['ADMINISTRATIVO','DOCENTE','APODERADO']},
+    {id:'C4',titulo:'Actividades de aniversario institucional',contenido:'Se coordinan actividades por el aniversario institucional: pasacalle, feria académica y presentaciones artísticas. Programa y responsables ficticios.',fecha:'2026-10-12',responsable:'Comisión de aniversario (ficticia)',roles:['ADMINISTRATIVO','DOCENTE','APODERADO']},
+    {id:'C5',titulo:'Uso responsable del Aula de Innovación Pedagógica',contenido:'Reserva el horario con anticipación, cuida los equipos y usa internet solo para fines pedagógicos. Normas de ejemplo para la demostración.',fecha:'2026-10-14',responsable:'Docente de aula de innovación (ficticio)',roles:['ADMINISTRATIVO','DOCENTE','APODERADO']}];
+  // Asistencias: últimos 5 días hábiles solo para 3.º A (Presente/Tardanza/Ausente)
+  asistenciasDB = []; const al3A = aulaDe(3,'A'); let d = new Date(), dias = [];
+  while (dias.length < 5) { if (d.getDay() % 6) dias.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')); d.setDate(d.getDate() - 1); }
+  dias.forEach(f => al3A.forEach(e => { const r = rnd(); asistenciasDB.push({id:'A'+asistenciasDB.length, estudianteId:e.id, fecha:f, estado:r < .85 ? 'Presente' : r < .93 ? 'Tardanza' : 'Ausente'}); }));
+  calificacionesDB = []; // 3.º A, bimestre 1
+  al3A.forEach(e => CURSOS.forEach(c => calificacionesDB.push({id:'N'+calificacionesDB.length, estudianteId:e.id, curso:c, bimestre:1, nota:8 + Math.floor(rnd() * 12)})));
+  const ap = al3A[0].id, otros = estudiantesDB.filter(e => e.estado === 'Matriculado' && e.grado !== 3);
+  const mot = ['Cita médica','Enfermedad (resfriado)','Viaje familiar','Trámite de documentos','Fallecimiento de familiar','Control odontológico'];
+  justificacionesDB = [0,1,2,3,4,5].map(i => ({id:'J'+(i+1), estudianteId:otros[i*40].id, fecha:'2026-10-0'+(i+1), motivo:mot[i], estado:['Pendiente','Aprobada','Pendiente','Rechazada','Pendiente','Aprobada'][i]}));
+  justificacionesDB.push({id:'J7', estudianteId:ap, fecha:'2026-10-02', motivo:'Cita médica', estado:'Aprobada'}, {id:'J8', estudianteId:ap, fecha:'2026-10-09', motivo:'Enfermedad (gripe)', estado:'Pendiente'});
+}
+const aulaDe = (g, s) => (estudiantesDB || []).filter(e => e.grado === g && e.seccion === s && e.estado === 'Matriculado');
 
-    <script>
-        const form = document.getElementById('cartaForm');
-        const resultadoDiv = document.getElementById('resultado');
-        const errorDiv = document.getElementById('error');
+/* ---------- Permisos ----------
+   AVISO: este RBAC es solo una simulación de interfaz. Una aplicación real DEBE validar
+   la autorización en el servidor; ocultar menús o comprobar en el cliente no protege datos. */
+const PERMISOS = {
+  ADMINISTRATIVO:{inicio:'general',matriculas:'general',docentes:'general',asistencias:'todas',calificaciones:'todas',justificaciones:'revisar',comunicados:'crear'},
+  DOCENTE:{inicio:'propio',asistencias:'aula',calificaciones:'aula',comunicados:'leer'},
+  APODERADO:{inicio:'propio',calificaciones:'propio',justificaciones:'propias',comunicados:'leer'}};
+const MODS = [['inicio','Inicio'],['matriculas','Matrículas y grados'],['docentes','Docentes'],['asistencias','Asistencias'],['calificaciones','Calificaciones'],['justificaciones','Justificaciones'],['comunicados','Comunicados']];
+let sesion = null;
+const nivel = m => sesion && PERMISOS[sesion.rol][m];
+const puedeAcceder = m => !!nivel(m);
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            generarCarta();
-        });
+/* ---------- Estado de vista ---------- */
+let vista = 'inicio', pag = 1, leidos = new Set();
+const F = {grado:'', seccion:'', estado:''};          // filtros de matrículas
+let A = {g:3, s:'A', fecha:hoy()};                     // selección de asistencias
+let C = {g:3, s:'A', curso:CURSOS[0], bim:1};          // selección de calificaciones
+let B = {clave:'', d:{}, sucio:false, inv:new Set()};  // borrador sin guardar (asistencia/notas)
+let JF = '';                                           // filtro de justificaciones
+const PAGINA = 15;
 
-        function validarYouTubeID(url) {
-            // Extraer ID de YouTube de diferentes formatos
-            let id = null;
-            
-            if (url.includes('v=')) {
-                id = url.split('v=')[1].split('&')[0];
-            } else if (url.includes('youtu.be/')) {
-                id = url.split('youtu.be/')[1].split('?')[0];
-            } else if (url.match(/^[a-zA-Z0-9_-]{11}$/)) {
-                id = url; // Es solo el ID
-            }
+/* ---------- Sesión ---------- */
+function iniciarSesion(rol) {
+  const e3 = aulaDe(3,'A')[0];
+  if (rol === 'ADMINISTRATIVO') sesion = {rol, nombre:'Rosa Quispe Mendoza', detalle:'Administrativo de demostración'};
+  else if (rol === 'DOCENTE') { const d = docentesDB[0]; sesion = {rol, nombre:d.nombres + ' ' + d.apellidos, detalle:d.especialidad + ' · 3.º A', aulas:d.aulas}; }
+  else sesion = {rol, nombre:e3.tutor, detalle:'Apoderado de ' + e3.nombres.split(' ')[0] + ' (3.º A)', estId:e3.id};
+  $('#login').hidden = true; const app = $('#app'); app.hidden = false; app.classList.add('entra');
+  $('#uNom').textContent = sesion.nombre; $('#uDet').textContent = sesion.detalle; $('#uRol').textContent = rol;
+  $('#nav').replaceChildren(...MODS.filter(([m]) => puedeAcceder(m)).map(([m, t]) => h('button', {class:'nav', type:'button', 'data-mod':m}, ico(m), t)));
+  B = {clave:'', d:{}, sucio:false, inv:new Set()}; A = {g:3, s:'A', fecha:hoy()}; C = {g:3, s:'A', curso:CURSOS[0], bim:1};
+  navegarA('inicio'); showToast('Bienvenido/a, ' + sesion.nombre.split(' ')[0] + '. Rol: ' + rol, 'ok');
+}
+function cerrarSesion() {
+  if (B.sucio && !confirm('Hay cambios sin guardar. ¿Cerrar sesión de todos modos?')) return;
+  sesion = null; cerrarModal(); cerrarPanel(); cerrarMenu();
+  $('#main').replaceChildren(); $('#nav').replaceChildren(); $('#busq').value = '';
+  $('#app').hidden = true; $('#app').classList.remove('entra'); $('#login').hidden = false;
+  $('#rolSel').value = ''; $('#rolErr').textContent = ''; $('#rolSel').focus(); B.sucio = false;
+}
 
-            // Validar que sea un ID válido
-            if (id && /^[a-zA-Z0-9_-]{11}$/.test(id)) {
-                return id;
-            }
-            return null;
-        }
+/* ---------- Navegación SPA ---------- */
+function navegarA(m) {
+  if (!puedeAcceder(m)) { showToast('No tienes permiso para acceder a este módulo.', 'error'); return false; }
+  if (m !== vista && B.sucio) { if (!confirm('Tienes cambios sin guardar. ¿Descartarlos?')) return false; }
+  if (m !== vista) { B = {clave:'', d:{}, sucio:false, inv:new Set()}; $('#busq').value = ''; pag = 1; }
+  vista = m; cerrarMenu(); pintar(); $('#main').focus({preventScroll:true}); return true;
+}
+const RENDER = () => ({inicio:renderInicio, matriculas:renderMatriculas, docentes:renderDocentes, asistencias:renderAsistencias, calificaciones:renderCalificaciones, justificaciones:renderJustificaciones, comunicados:renderComunicados})[vista]();
+function pintar() {
+  const foco = document.activeElement && document.activeElement.id;
+  $('#titulo').textContent = MODS.find(x => x[0] === vista)[1];
+  document.querySelectorAll('.nav').forEach(b => b.dataset.mod === vista ? b.setAttribute('aria-current','page') : b.removeAttribute('aria-current'));
+  const SP = {matriculas:'Nombre, apellido o DNI',docentes:'Docente o especialidad',asistencias:'Alumno del aula',calificaciones:'Alumno autorizado',comunicados:'Título o contenido',justificaciones:'Estudiante o motivo'};
+  const bq = $('#busq'), off = vista === 'inicio' || (vista === 'calificaciones' && sesion.rol === 'APODERADO');
+  bq.disabled = off; bq.placeholder = off ? 'Búsqueda no disponible' : 'Buscar: ' + SP[vista];
+  $('#busqAy').textContent = vista === 'inicio' ? 'La búsqueda se activa en los módulos.' : off ? 'Solo ves a tu estudiante.' : '';
+  $('#btnPdf').hidden = !['matriculas','docentes','asistencias','calificaciones','justificaciones'].includes(vista);
+  $('#main').replaceChildren(); RENDER(); actualizarCampana();
+  if (foco) { const e = document.getElementById(foco); if (e && e.focus && foco !== 'busq') e.focus(); }
+}
 
-        function mostrarError(mensaje) {
-            errorDiv.textContent = mensaje;
-            errorDiv.classList.add('visible');
-            resultadoDiv.classList.remove('visible');
-        }
+/* ---------- Cálculos ---------- */
+const pctAsist = ids => { const r = asistenciasDB.filter(a => ids.includes(a.estudianteId)); return r.length ? Math.round(r.filter(a => a.estado === 'Presente').length * 100 / r.length) + '%' : '—'; };
+const promedio = ids => { const r = calificacionesDB.filter(a => ids.includes(a.estudianteId)); return r.length ? (r.reduce((s, x) => s + x.nota, 0) / r.length).toFixed(1) : '—'; };
+const comunicadosRol = () => comunicadosDB.filter(c => c.roles.includes(sesion.rol)).sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id.localeCompare(a.id));
+const stat = (v, l) => h('div', {class:'card stat'}, h('b', {text:String(v)}), h('span', {text:l}));
 
-        function limpiarError() {
-            errorDiv.classList.remove('visible');
-        }
+/* ---------- Inicio ---------- */
+function renderInicio() {
+  const m = $('#main'), r = sesion.rol, pend = j => j.filter(x => x.estado === 'Pendiente').length;
+  let cards;
+  if (r === 'ADMINISTRATIVO') cards = [stat(estudiantesDB.length, 'Estudiantes de demostración (total)'), stat(docentesDB.length, 'Docentes de demostración'), stat(pend(justificacionesDB), 'Justificaciones pendientes')];
+  else if (r === 'DOCENTE') { const ids = aulaDe(3,'A').map(e => e.id); cards = [stat(ids.length, 'Estudiantes de demostración en 3.º A'), stat(pctAsist(ids), 'Asistencia registrada (presentes)'), stat(calificacionesDB.filter(n => ids.includes(n.estudianteId)).length, 'Notas registradas en 3.º A')]; }
+  else { const ids = [sesion.estId]; cards = [stat(promedio(ids), 'Promedio de notas de tu estudiante'), stat(pctAsist(ids), 'Asistencia de tu estudiante'), stat(pend(justificacionesDB.filter(j => j.estudianteId === sesion.estId)), 'Tus justificaciones pendientes')]; }
+  m.append(h('div', {class:'grid3'}, cards), h('h2', {text:'Comunicados de demostración recientes', style:'margin:8px 0 12px'}), h('div', {class:'cards'}, comunicadosRol().slice(0, 3).map(tarjetaCom)),
+    h('h2', {text:'Accesos rápidos', style:'margin:20px 0 12px'}), h('div', {class:'row'}, MODS.filter(([k]) => k !== 'inicio' && puedeAcceder(k)).map(([k, t]) => h('button', {class:'btn sec', type:'button', onclick:() => navegarA(k)}, t))));
+}
+const tarjetaCom = c => h('article', {class:'card'}, badge('Comunicado de demostración', 'azul'), h('h3', {text:c.titulo, style:'margin-top:8px'}), h('small', {text:fd(c.fecha) + (c.responsable ? ' · ' + c.responsable : '')}), h('p', {text:c.contenido}));
 
-        function generarCarta() {
-            limpiarError();
+/* ---------- Matrículas y filtros ---------- */
+function filtrarEstudiantes() {
+  const q = norm($('#busq').value.trim());
+  return estudiantesDB.filter(e => (!F.grado || e.grado == F.grado) && (!F.seccion || e.seccion === F.seccion) && (!F.estado || e.estado === F.estado) && (!q || norm(e.nombres + ' ' + e.apellidos + ' ' + e.dni).includes(q)));
+}
+function renderMatriculas() {
+  const cambia = (k, v) => { F[k] = v; pag = 1; pintarTabla(); };
+  $('#main').append(h('div', {class:'fil'},
+    campo('fg', 'Grado', sel('fg', [['', 'Todos'], ...[1,2,3,4,5].map(g => [g, GR(g)])], F.grado, v => cambia('grado', v))),
+    campo('fs', 'Sección', sel('fs', [['', 'Todas'], ...SECS.map(s => [s, s])], F.seccion, v => cambia('seccion', v))),
+    campo('fe', 'Estado', sel('fe', [['', 'Todos'], ['Matriculado','Matriculado'], ['Retirado','Retirado']], F.estado, v => cambia('estado', v))),
+    h('button', {class:'btn sec', type:'button', onclick:() => { F.grado = F.seccion = F.estado = ''; $('#busq').value = ''; pag = 1; pintar(); }, text:'Limpiar filtros'}),
+    h('button', {class:'btn', type:'button', onclick:exportarCSV, text:'Exportar CSV'})), h('div', {id:'res'}));
+  pintarTabla();
+}
+function pintarTabla() {
+  const lista = filtrarEstudiantes(), tot = lista.length, pags = Math.max(1, Math.ceil(tot / PAGINA));
+  pag = Math.min(Math.max(1, pag), pags); // nunca fuera de rango
+  const ini = (pag - 1) * PAGINA, vis = lista.slice(ini, ini + PAGINA), res = $('#res');
+  res.replaceChildren(tot ? tabla(['DNI','Apellidos y nombres','Grado','Sección','Estado','Tutor','Acción'], vis.map(e => [e.dni, nombreEst(e), GR(e.grado), e.seccion, bEstado(e.estado), e.tutor, h('button', {class:'btn sm sec', type:'button', 'aria-label':'Ver ficha de ' + nombreEst(e), onclick:() => verFicha(e), text:'Ver ficha'})])) : vacio('No hay estudiantes que coincidan con los filtros.'),
+    h('div', {class:'pg'}, h('span', {text: tot ? `Mostrando ${ini + 1}–${ini + vis.length} de ${tot} estudiantes de demostración` : 'Mostrando 0 de 0 estudiantes'}),
+      h('div', {class:'row'}, h('button', {class:'btn sec', type:'button', disabled:pag <= 1, onclick:() => { pag--; pintarTabla(); }, text:'Anterior'}), h('span', {text:`Página ${pag} de ${pags}`}), h('button', {class:'btn sec', type:'button', disabled:pag >= pags, onclick:() => { pag++; pintarTabla(); }, text:'Siguiente'}))));
+}
+function verFicha(e) {
+  abrirModal('Ficha del estudiante', h('dl', {}, ...[['DNI', e.dni], ['Nombres', e.nombres], ['Apellidos', e.apellidos], ['Grado y sección', GR(e.grado) + ' · ' + e.seccion], ['Estado', e.estado], ['Apoderado', e.tutor], ['Asistencia', pctAsist([e.id])], ['Promedio', promedio([e.id])]].flatMap(([k, v]) => [h('dt', {text:k}), h('dd', {text:v})])));
+}
+function exportarCSV() { // exporta TODOS los resultados filtrados
+  if (!puedeAcceder('matriculas')) return;
+  const q = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const filas = [['DNI','Apellidos','Nombres','Grado','Sección','Estado','Tutor'], ...filtrarEstudiantes().map(e => [e.dni, e.apellidos, e.nombres, GR(e.grado), e.seccion, e.estado, e.tutor])];
+  const url = URL.createObjectURL(new Blob(['\ufeff' + filas.map(f => f.map(q).join(',')).join('\r\n')], {type:'text/csv;charset=utf-8'}));
+  const a = h('a', {href:url, download:'estudiantes.csv'}); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 500);
+  showToast('CSV exportado (' + (filas.length - 1) + ' registros).', 'ok');
+}
 
-            const para = document.getElementById('para').value.trim();
-            const de = document.getElementById('de').value.trim();
-            const tipo = document.getElementById('tipo').value;
-            const fecha = document.getElementById('fecha').value;
-            const youtubeUrl = document.getElementById('youtube').value.trim();
+/* ---------- Docentes ---------- */
+function renderDocentes() {
+  const q = norm($('#busq').value.trim()), l = docentesDB.filter(d => !q || norm(d.nombres + ' ' + d.apellidos + ' ' + d.especialidad).includes(q));
+  $('#main').append(l.length ? tabla(['ID','Docente','Especialidad','Aulas asignadas'], l.map(d => [d.id, d.nombres + ' ' + d.apellidos, d.especialidad, d.aulas.map(a => a.replace(/^(\d)/, '$1.º ')).join(', ')])) : vacio('No se encontraron docentes.'));
+}
 
-            // Validar campos requeridos
-            if (!para || !de) {
-                mostrarError('⚠️ Completa los nombres 💖');
-                return;
-            }
+/* ---------- Asistencias (borrador => guardado simulado en asistenciasDB) ---------- */
+function cambiarSeleccion(fn) { if (B.sucio && !confirm('Tienes cambios sin guardar. ¿Descartarlos?')) { pintar(); return; } fn(); B = {clave:'', d:{}, sucio:false, inv:new Set()}; pintar(); }
+function renderAsistencias() {
+  const adm = sesion.rol === 'ADMINISTRATIVO', g = adm ? +A.g : 3, s = adm ? A.s : '3A'.slice(1), lista = aulaDe(g, s), clave = g + s + '|' + A.fecha;
+  if (B.clave !== clave) { B = {clave, d:{}, sucio:false, inv:new Set()}; lista.forEach(e => { const r = asistenciasDB.find(a => a.estudianteId === e.id && a.fecha === A.fecha); B.d[e.id] = r ? r.estado : 'Presente'; }); }
+  const q = norm($('#busq').value.trim()), vis = lista.filter(e => !q || norm(nombreEst(e) + ' ' + e.dni).includes(q)), guardada = asistenciasDB.some(a => a.fecha === A.fecha && lista.some(e => e.id === a.estudianteId));
+  $('#main').append(h('div', {class:'fil'},
+    campo('afecha', 'Fecha', h('input', {id:'afecha', type:'date', value:A.fecha, onchange:e => e.target.value ? cambiarSeleccion(() => A.fecha = e.target.value) : pintar()})),
+    adm ? campo('ag', 'Grado', sel('ag', [1,2,3,4,5].map(x => [x, GR(x)]), A.g, v => cambiarSeleccion(() => A.g = +v))) : null,
+    adm ? campo('as', 'Sección', sel('as', SECS.map(x => [x, x]), A.s, v => cambiarSeleccion(() => A.s = v))) : h('div', {class:'campo'}, h('label', {text:'Aula'}), badge('3.º A (fija)', 'azul')),
+    h('button', {class:'btn sec', type:'button', onclick:() => { lista.forEach(e => B.d[e.id] = 'Presente'); B.sucio = true; pintar(); }, text:'Marcar todos presentes'}),
+    h('button', {class:'btn', type:'button', onclick:() => guardarAsistencia(g, s), text:'Guardar asistencia'})),
+    h('p', {class:'', text:(guardada ? 'Hay asistencia guardada para esta fecha.' : 'Aún no hay asistencia guardada para esta fecha.') + (B.sucio ? ' Tienes cambios sin guardar.' : ''), style:'color:var(--mu)'}),
+    vis.length ? tabla(['DNI','Estudiante','Asistencia'], vis.map(e => [e.dni, nombreEst(e), h('select', {id:'sa' + e.id, 'aria-label':'Asistencia de ' + nombreEst(e), onchange:ev => { B.d[e.id] = ev.target.value; B.sucio = true; }}, ['Presente','Tardanza','Ausente'].map(o => h('option', {value:o, text:o, selected:B.d[e.id] === o})))])) : vacio('No hay alumnos para mostrar.'));
+}
+function guardarAsistencia(g, s) {
+  if (!puedeAcceder('asistencias') || (sesion.rol === 'DOCENTE' && !(sesion.aulas || []).includes('3A'))) return showToast('No autorizado para modificar asistencias.', 'error');
+  aulaDe(g, s).forEach(e => { const r = asistenciasDB.find(a => a.estudianteId === e.id && a.fecha === A.fecha); // upsert: sin duplicados
+    if (r) r.estado = B.d[e.id]; else asistenciasDB.push({id:'A' + asistenciasDB.length + '_' + Date.now(), estudianteId:e.id, fecha:A.fecha, estado:B.d[e.id]}); });
+  B.sucio = false; showToast('Asistencia guardada para el ' + fd(A.fecha) + '.', 'ok'); pintar();
+}
 
-            if (para.length > 50 || de.length > 50) {
-                mostrarError('⚠️ Los nombres no pueden exceder 50 caracteres');
-                return;
-            }
+/* ---------- Calificaciones ---------- */
+function renderCalificaciones() {
+  if (sesion.rol === 'APODERADO') return renderNotasApoderado();
+  const adm = sesion.rol === 'ADMINISTRATIVO', g = adm ? +C.g : 3, s = adm ? C.s : 'A', lista = aulaDe(g, s), clave = [g, s, C.curso, C.bim].join('|');
+  if (B.clave !== clave) { B = {clave, d:{}, sucio:false, inv:new Set()}; lista.forEach(e => { const r = calificacionesDB.find(n => n.estudianteId === e.id && n.curso === C.curso && n.bimestre === +C.bim); B.d[e.id] = r ? String(r.nota) : ''; }); }
+  const q = norm($('#busq').value.trim()), vis = lista.filter(e => !q || norm(nombreEst(e) + ' ' + e.dni).includes(q));
+  $('#main').append(h('div', {class:'fil'},
+    campo('cc', 'Curso', sel('cc', CURSOS.map(x => [x, x]), C.curso, v => cambiarSeleccion(() => C.curso = v))),
+    campo('cb', 'Bimestre', sel('cb', [1,2,3,4].map(x => [x, x + '.º bimestre']), C.bim, v => cambiarSeleccion(() => C.bim = +v))),
+    adm ? campo('cg', 'Grado', sel('cg', [1,2,3,4,5].map(x => [x, GR(x)]), C.g, v => cambiarSeleccion(() => C.g = +v))) : null,
+    adm ? campo('cs', 'Sección', sel('cs', SECS.map(x => [x, x]), C.s, v => cambiarSeleccion(() => C.s = v))) : h('div', {class:'campo'}, h('label', {text:'Aula'}), badge('3.º A (fija)', 'azul')),
+    h('button', {class:'btn', type:'button', onclick:() => guardarCalificaciones(g, s, lista), text:'Guardar calificaciones'})),
+    h('p', {text:'Escala 0–20. Un campo vacío significa «Sin calificar».', style:'color:var(--mu)'}),
+    vis.length ? tabla(['DNI','Estudiante','Nota (0–20)'], vis.map(e => { const bad = B.inv.has(e.id);
+      return [e.dni, nombreEst(e), h('input', {id:'n' + e.id, type:'number', min:0, max:20, step:'0.1', value:B.d[e.id], placeholder:'Sin calificar', class:bad ? 'inv' : '', 'aria-invalid':bad ? 'true' : 'false', 'aria-label':'Nota de ' + nombreEst(e), style:'width:130px',
+        oninput:ev => { B.d[e.id] = ev.target.value; B.sucio = true; B.inv.delete(e.id); ev.target.classList.remove('inv'); ev.target.setAttribute('aria-invalid', 'false'); }})]; })) : vacio('No hay alumnos para mostrar.'));
+}
+function guardarCalificaciones(g, s, lista) {
+  if (!puedeAcceder('calificaciones') || nivel('calificaciones') === 'propio') return showToast('No autorizado para modificar notas.', 'error');
+  B.inv = new Set(); lista.forEach(e => { const v = String(B.d[e.id] ?? '').trim(); if (v !== '' && (isNaN(Number(v)) || Number(v) < 0 || Number(v) > 20)) B.inv.add(e.id); });
+  if (B.inv.size) { const p = [...B.inv][0]; pintar(); showToast('Hay ' + B.inv.size + ' nota(s) fuera del rango 0–20. Corrígelas para guardar.', 'error'); const i = document.getElementById('n' + p); if (i) i.focus(); return; }
+  lista.forEach(e => { const v = String(B.d[e.id] ?? '').trim(), i = calificacionesDB.findIndex(n => n.estudianteId === e.id && n.curso === C.curso && n.bimestre === +C.bim);
+    if (v === '') { if (i >= 0) calificacionesDB.splice(i, 1); } else if (i >= 0) calificacionesDB[i].nota = Number(v);
+    else calificacionesDB.push({id:'N' + Date.now() + e.id, estudianteId:e.id, curso:C.curso, bimestre:+C.bim, nota:Number(v)}); });
+  B.sucio = false; showToast('Calificaciones guardadas.', 'ok');
+}
+function renderNotasApoderado() {
+  const e = estPorId(sesion.estId), nota = (c, b) => { const r = calificacionesDB.find(n => n.estudianteId === e.id && n.curso === c && n.bimestre === b); return r ? String(r.nota) : 'Sin calificar'; };
+  $('#main').append(h('p', {text:'Estudiante: ' + nombreEst(e) + ' · ' + GR(e.grado) + ' ' + e.seccion + ' (solo lectura)'}), tabla(['Curso','1.º bim.','2.º bim.','3.º bim.','4.º bim.'], CURSOS.map(c => [c, ...[1,2,3,4].map(b => nota(c, b))])));
+}
 
-            // Validar YouTube si se proporciona
-            let ytID = '';
-            if (youtubeUrl) {
-                ytID = validarYouTubeID(youtubeUrl);
-                if (!ytID) {
-                    mostrarError('⚠️ El enlace de YouTube no es válido');
-                    return;
-                }
-            }
+/* ---------- Justificaciones ---------- */
+function renderJustificaciones() {
+  const m = $('#main'), adm = sesion.rol === 'ADMINISTRATIVO', q = norm($('#busq').value.trim());
+  let l = justificacionesDB.filter(j => adm || j.estudianteId === sesion.estId); // el apoderado solo ve las de su estudiante
+  l = l.filter(j => (!JF || j.estado === JF) && (!q || norm(nombreEst(estPorId(j.estudianteId)) + ' ' + j.motivo).includes(q)));
+  if (!adm) m.append(h('form', {class:'card fil', novalidate:true, onsubmit:crearJustificacion},
+    campo('jfecha', 'Fecha de inasistencia', h('input', {id:'jfecha', type:'date', value:hoy(), required:true})),
+    campo('jmot', 'Motivo (obligatorio)', h('textarea', {id:'jmot', rows:2, required:true, style:'min-width:240px'})), h('button', {class:'btn', type:'submit', text:'Crear solicitud'})));
+  else m.append(h('div', {class:'fil'}, campo('jf', 'Estado', sel('jf', [['', 'Todos'], ['Pendiente','Pendiente'], ['Aprobada','Aprobada'], ['Rechazada','Rechazada']], JF, v => { JF = v; pintar(); }))));
+  m.append(l.length ? tabla(['Estudiante','Grado','Fecha','Motivo','Estado', adm ? 'Acciones' : ''].filter(Boolean), l.map(j => { const e = estPorId(j.estudianteId);
+    return [nombreEst(e), GR(e.grado) + ' ' + e.seccion, fd(j.fecha), j.motivo, bEstado(j.estado), ...(adm ? [j.estado === 'Pendiente' ? h('div', {class:'row'}, h('button', {class:'btn sm', type:'button', 'aria-label':'Aprobar solicitud de ' + nombreEst(e), onclick:() => resolverJust(j.id, 'Aprobada'), text:'Aprobar'}), h('button', {class:'btn sm bad', type:'button', 'aria-label':'Rechazar solicitud de ' + nombreEst(e), onclick:() => resolverJust(j.id, 'Rechazada'), text:'Rechazar'})) : '—'] : [])]; })) : vacio('No hay solicitudes para mostrar.'));
+}
+function crearJustificacion(ev) {
+  ev.preventDefault(); if (!puedeAcceder('justificaciones') || sesion.rol !== 'APODERADO') return;
+  const f = $('#jfecha'), mo = $('#jmot'), okF = !!f.value, okM = !!mo.value.trim();
+  f.classList.toggle('inv', !okF); mo.classList.toggle('inv', !okM);
+  if (!okF || !okM) { (okF ? mo : f).focus(); return showToast('Completa la fecha y el motivo.', 'error'); }
+  justificacionesDB.push({id:'J' + (justificacionesDB.length + 1), estudianteId:sesion.estId, fecha:f.value, motivo:mo.value.trim(), estado:'Pendiente'});
+  showToast('Solicitud enviada (Pendiente).', 'ok'); pintar();
+}
+function resolverJust(id, estado) {
+  const j = justificacionesDB.find(x => x.id === id);
+  if (!puedeAcceder('justificaciones') || sesion.rol !== 'ADMINISTRATIVO' || !j || j.estado !== 'Pendiente') return showToast('Acción no permitida.', 'error');
+  j.estado = estado; showToast('Solicitud ' + estado.toLowerCase() + '.', estado === 'Aprobada' ? 'ok' : 'info'); pintar();
+}
 
-            // Generar código único
-            const codigo = Math.random().toString(36).substring(2, 10);
+/* ---------- Comunicados ---------- */
+function renderComunicados() {
+  const m = $('#main'), q = norm($('#busq').value.trim()), l = comunicadosRol().filter(c => !q || norm(c.titulo + ' ' + c.contenido).includes(q));
+  if (nivel('comunicados') === 'crear') m.append(h('form', {class:'card', style:'margin-bottom:16px;display:grid;gap:10px', novalidate:true, onsubmit:crearComunicado},
+    h('h2', {text:'Nuevo comunicado', style:'font-size:1.1rem'}), campo('ct', 'Título', h('input', {id:'ct', required:true})), campo('cco', 'Contenido', h('textarea', {id:'cco', rows:3, required:true})),
+    h('fieldset', {id:'cdest'}, h('legend', {text:'Destinatarios'}), ['ADMINISTRATIVO','DOCENTE','APODERADO'].map(r => h('label', {style:'margin-right:14px'}, h('input', {type:'checkbox', value:r, checked:true}), ' ' + r))),
+    h('div', {}, h('button', {class:'btn', type:'submit', text:'Publicar comunicado'}))));
+  m.append(h('p', {text:'Comunicados de demostración: fechas, responsables y actividades son ficticios.', style:'color:var(--mu)'}), l.length ? h('div', {class:'cards'}, l.map(tarjetaCom)) : vacio('No hay comunicados para mostrar.'));
+}
+function crearComunicado(ev) {
+  ev.preventDefault(); if (nivel('comunicados') !== 'crear') return showToast('No autorizado.', 'error');
+  const t = $('#ct'), c = $('#cco'), roles = [...document.querySelectorAll('#cdest input:checked')].map(i => i.value);
+  t.classList.toggle('inv', !t.value.trim()); c.classList.toggle('inv', !c.value.trim());
+  if (!t.value.trim() || !c.value.trim() || !roles.length) return showToast('Completa título, contenido y al menos un destinatario.', 'error');
+  comunicadosDB.push({id:'C' + (comunicadosDB.length + 1), titulo:t.value.trim(), contenido:c.value.trim(), fecha:hoy(), responsable:'Administrativo de demostración', roles});
+  showToast('Comunicado publicado.', 'ok'); pintar();
+}
 
-            // Construir URL
-            const base = window.location.origin + window.location.pathname.replace('index.html', '');
-            const params = new URLSearchParams({
-                para: para,
-                de: de,
-                tipo: tipo,
-                exp: fecha,
-                yt: ytID,
-                id: codigo
-            });
+/* ---------- Campana (comunicados por rol, leídos en memoria) ---------- */
+const kLeido = c => sesion.rol + '|' + c.id;
+function actualizarCampana() {
+  const n = comunicadosRol().filter(c => !leidos.has(kLeido(c))).length, b = $('#bellN'); b.hidden = !n; b.textContent = n; $('#bell').setAttribute('aria-label', 'Notificaciones: ' + n + ' sin leer');
+  if (!$('#panelC').hidden) pintarPanel();
+}
+function pintarPanel() {
+  const l = comunicadosRol();
+  $('#panelC').replaceChildren(h('div', {class:'mh'}, h('h2', {text:'Comunicados', style:'font-size:1rem'}), h('button', {class:'btn sm sec', type:'button', onclick:() => { l.forEach(c => leidos.add(kLeido(c))); actualizarCampana(); }, text:'Marcar todos leídos'})),
+    l.map(c => h('div', {style:'border-top:1px solid var(--bd);padding:8px 0'}, h('strong', {text:c.titulo}), ' ', leidos.has(kLeido(c)) ? badge('Leído', 'ok') : badge('Nuevo', 'warn'), h('div', {text:c.contenido, style:'font-size:.85rem;color:var(--mu)'}),
+      leidos.has(kLeido(c)) ? null : h('button', {class:'btn sm sec', type:'button', style:'margin-top:4px', onclick:() => { leidos.add(kLeido(c)); actualizarCampana(); }, text:'Marcar como leído'}))));
+}
+function cerrarPanel() { $('#panelC').hidden = true; $('#bell').setAttribute('aria-expanded', 'false'); }
 
-            const enlace = base + 'carta.html?' + params.toString();
+/* ---------- Reportes PDF ----------
+   Generador de PDF mínimo en JS puro (sin librerías, funciona en file://): páginas A4 horizontales,
+   fuente Helvetica (WinAnsi), tabla con cabecera repetida, zebra y numeración de páginas. */
+function crearPDF(titulo, sub, cab, filas) {
+  const W = 842, H = 595, M = 36, FS = 8, LH = 15, ancho = W - 2 * M;
+  const esc = t => String(t).replace(/[–—]/g, '-').replace(/[^\x20-\x7e\xa0-\xff]/g, '?').replace(/[\\()]/g, '\\$&'); // solo latin-1
+  const len = cab.map((c, i) => Math.min(40, Math.max(c.length, 4, ...filas.map(f => String(f[i]).length))));
+  const tot = len.reduce((a, b) => a + b, 0), cw = len.map(l => ancho * l / tot), cx = []; let x0 = M; cw.forEach(w => { cx.push(x0); x0 += w; });
+  const corta = (t, w) => { t = String(t); const m = Math.max(1, Math.floor((w - 6) / (FS * 0.52))); return t.length > m ? t.slice(0, Math.max(1, m - 3)) + '...' : t; };
+  const pags = []; let i = 0;
+  do { const yTop = pags.length ? H - M : H - M - 56, cap = Math.floor((yTop - LH - M) / LH); pags.push({yTop, filas:filas.slice(i, i + cap)}); i += cap; } while (i < filas.length);
+  const contenidos = pags.map((p, n) => {
+    let s = ''; const txt = (t, x, y, f, sz) => { s += `BT /${f} ${sz} Tf ${x.toFixed(1)} ${y.toFixed(1)} Td (${esc(t)}) Tj ET\n`; };
+    if (n === 0) { txt('SIA-Net - ' + titulo, M, H - M - 10, 'F2', 14); txt('I.E. N.° 86002 «Jorge Basadre Grohmann» · Prototipo académico · Datos ficticios', M, H - M - 48, 'F1', 7); txt(sub, M, H - M - 26, 'F1', 9);
+      txt('Generado: ' + hoy() + ' ' + new Date().toTimeString().slice(0, 5) + ' | Usuario: ' + sesion.nombre + ' (' + sesion.rol + ') | Registros: ' + filas.length, M, H - M - 38, 'F1', 8); }
+    s += `0.12 0.23 0.54 rg ${M} ${p.yTop - LH} ${ancho} ${LH} re f\n1 g\n`; cab.forEach((c, k) => txt(corta(c, cw[k]), cx[k] + 3, p.yTop - LH + 4.5, 'F2', FS)); s += '0 g\n';
+    p.filas.forEach((f, r) => { const yb = p.yTop - LH * (r + 2);
+      if (r % 2) s += `0.96 0.97 0.99 rg ${M} ${yb} ${ancho} ${LH} re f\n0 g\n`;
+      f.forEach((c, k) => txt(corta(c, cw[k]), cx[k] + 3, yb + 4.5, 'F1', FS)); s += `0.85 0.88 0.92 RG ${M} ${yb} m ${M + ancho} ${yb} l S\n`; });
+    txt('Página ' + (n + 1) + ' de ' + pags.length, W - M - 70, 20, 'F1', 8); return s;
+  });
+  const objs = ['<< /Type /Catalog /Pages 2 0 R >>', null, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>', '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'], kids = [];
+  contenidos.forEach((c, k) => { const pn = 5 + k * 2; kids.push(pn + ' 0 R');
+    objs[pn - 1] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${pn + 1} 0 R >>`;
+    objs[pn] = `<< /Length ${c.length} >>\nstream\n${c}endstream`; });
+  objs[1] = `<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${kids.length} >>`;
+  let out = '%PDF-1.4\n'; const off = []; objs.forEach((o, k) => { off.push(out.length); out += `${k + 1} 0 obj\n${o}\nendobj\n`; });
+  const xr = out.length; out += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n` + off.map(o => String(o).padStart(10, '0') + ' 00000 n \n').join('') + `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF`;
+  const u = new Uint8Array(out.length); for (let k = 0; k < out.length; k++) u[k] = out.charCodeAt(k) & 255; return u; // 1 carácter = 1 byte
+}
+/* Datos del reporte: Matrículas usa TODOS los resultados filtrados; el resto toma lo que muestra la tabla en pantalla. */
+function datosReporte() {
+  const tit = MODS.find(x => x[0] === vista)[1];
+  if (vista === 'matriculas') { const q = $('#busq').value.trim(), f = [F.grado && GR(F.grado), F.seccion && 'Sección ' + F.seccion, F.estado, q && 'Búsqueda: ' + q].filter(Boolean);
+    return {tit, sub:'Filtros: ' + (f.join(' · ') || 'ninguno'), cab:['DNI','Apellidos y nombres','Grado','Sección','Estado','Tutor'], filas:filtrarEstudiantes().map(e => [e.dni, nombreEst(e), GR(e.grado), e.seccion, e.estado, e.tutor])}; }
+  const t = $('#main table'); if (!t) return null;
+  const cab = [...t.querySelectorAll('thead th')].map(x => x.textContent), skip = cab.map(c => c === 'Acciones' || c === 'Acción');
+  const filas = [...t.querySelectorAll('tbody tr')].map(tr => [...tr.children].map(td => { const c = td.querySelector('select,input'); return c ? (c.tagName === 'SELECT' ? c.value : (c.value || 'Sin calificar')) : td.textContent; }).filter((_, i) => !skip[i]));
+  const adm = sesion.rol === 'ADMINISTRATIVO', sub = vista === 'asistencias' ? 'Fecha: ' + fd(A.fecha) + ' · Aula: ' + (adm ? GR(A.g) + ' ' + A.s : '3.º A')
+    : vista === 'calificaciones' ? C.curso + ' · ' + C.bim + '.º bimestre · Aula: ' + (adm ? GR(C.g) + ' ' + C.s : '3.º A') : tit;
+  return {tit, sub, cab:cab.filter((_, i) => !skip[i]), filas};
+}
+function descargarPDF() {
+  if (!puedeAcceder(vista)) return showToast('No tienes permiso para generar este reporte.', 'error');
+  const d = datosReporte(); if (!d || !d.filas.length) return showToast('No hay datos en la tabla para generar el reporte.', 'error');
+  const url = URL.createObjectURL(new Blob([crearPDF(d.tit, d.sub, d.cab, d.filas)], {type:'application/pdf'}));
+  const a = h('a', {href:url, download:'SIA-Net_' + vista + '_' + hoy() + '.pdf'}); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast('Reporte PDF generado (' + d.filas.length + ' filas).', 'ok');
+}
 
-            // Mostrar resultado de forma segura
-            resultadoDiv.innerHTML = ''; // Limpiar
-            
-            const p = document.createElement('p');
-            p.textContent = '🔗 Enlace generado:';
-            
-            const link = document.createElement('a');
-            link.href = enlace;
-            link.target = '_blank';
-            link.textContent = enlace;
-            link.style.display = 'block';
-            link.style.marginTop = '10px';
-            link.style.wordBreak = 'break-all';
-            
-            const copyBtn = document.createElement('button');
-            copyBtn.type = 'button';
-            copyBtn.textContent = '📋 Copiar enlace';
-            copyBtn.style.marginTop = '10px';
-            copyBtn.style.fontSize = '14px';
-            copyBtn.addEventListener('click', () => {
-                navigator.clipboard.writeText(enlace);
-                copyBtn.textContent = '✅ ¡Copiado!';
-                setTimeout(() => copyBtn.textContent = '📋 Copiar enlace', 2000);
-            });
+/* ---------- Sobre la institución ----------
+   Reseña contrastada con el sitio institucional de referencia (consultado el 17/10/2026). Dirección, teléfonos,
+   correo y autoridades NO se muestran: no se verificaron en una fuente institucional accesible. */
+function sobreInstitucion() {
+  abrirModal('Sobre la institución', h('div', {class:'sobre'},
+    h('p', {}, h('strong', {text:'I.E. N.° 86002 “Jorge Basadre Grohmann”'}), ' · Nicrupampa, Independencia, Huaraz, Áncash. Ofrece Primaria y Secundaria; esta versión del prototipo cubre solo Secundaria (1.º a 5.º).'),
+    h('p', {text:'La institución se originó el 4 de junio de 1975 mediante la fusión de cinco centros educativos de la zona, en el contexto de la reorganización escolar posterior al sismo de 1970. En 1985 se aprobó oficialmente el nombre del historiador peruano Jorge Basadre Grohmann y en 1992 fue reconocida como Centro de Aplicación del Instituto Superior Pedagógico de Huaraz.'}),
+    h('p', {style:'color:var(--mu);font-size:.85rem', text:'Reseña contrastada con el sitio institucional de referencia, que escribe el apellido como «Grohman». Para contactos y autoridades vigentes, consulta los canales oficiales.'}),
+    h('p', {}, h('a', {href:'https://iejbghz.jimdofree.com/', target:'_blank', rel:'noopener noreferrer', text:'Sitio institucional de referencia (externo)'})),
+    h('p', {style:'color:var(--mu);font-size:.85rem', text:'SIA-Net es un prototipo académico con datos ficticios; no es una plataforma oficial ni cuenta con autorización institucional.'})));
+}
 
-            resultadoDiv.appendChild(p);
-            resultadoDiv.appendChild(link);
-            resultadoDiv.appendChild(copyBtn);
-            resultadoDiv.classList.add('visible');
-        }
-    </script>
+/* ---------- Modal, toast, menú móvil ---------- */
+let modalPrev = null;
+function abrirModal(titulo, cuerpo) {
+  cerrarModal(); modalPrev = document.activeElement;
+  const m = h('div', {class:'modal-bg', id:'modal', onclick:e => { if (e.target === m) cerrarModal(); }}, h('div', {class:'modal', role:'dialog', 'aria-modal':'true', 'aria-labelledby':'mt'},
+    h('div', {class:'mh'}, h('h2', {id:'mt', text:titulo}), h('button', {class:'btn sec', type:'button', 'aria-label':'Cerrar ventana', onclick:() => cerrarModal(), text:'Cerrar ✕'})), cuerpo));
+  document.body.append(m); m.querySelector('button').focus();
+}
+function cerrarModal() { const m = $('#modal'); if (m) { m.remove(); if (modalPrev && modalPrev.isConnected) modalPrev.focus(); modalPrev = null; } }
+function showToast(msg, tipo = 'ok') { const t = h('div', {class:'toast ' + tipo, text:msg}); $('#toasts').append(t); setTimeout(() => t.remove(), 4000); }
+function cerrarMenu() { $('#side').classList.remove('open'); $('#ov').classList.remove('show'); $('#menuBtn').setAttribute('aria-expanded', 'false'); }
+
+/* ---------- Eventos (una sola vez: sin listeners duplicados) ---------- */
+$('#fLogin').addEventListener('submit', e => { e.preventDefault(); const s = $('#rolSel'); if (!s.value) { $('#rolErr').textContent = 'Selecciona un rol para continuar.'; s.classList.add('inv'); s.focus(); return; } s.classList.remove('inv'); iniciarSesion(s.value); });
+$('#btnSalir').addEventListener('click', cerrarSesion);
+document.querySelectorAll('.sobre').forEach(b => b.addEventListener('click', sobreInstitucion));
+$('#btnPdf').addEventListener('click', descargarPDF);
+$('#nav').addEventListener('click', e => { const b = e.target.closest('.nav'); if (b) navegarA(b.dataset.mod); }); // delegación
+$('#busq').addEventListener('input', () => { pag = 1; vista === 'matriculas' ? pintarTabla() : pintar(); });
+$('#menuBtn').addEventListener('click', () => { const ab = $('#side').classList.toggle('open'); $('#ov').classList.toggle('show', ab); $('#menuBtn').setAttribute('aria-expanded', ab); });
+$('#ov').addEventListener('click', cerrarMenu);
+$('#bell').addEventListener('click', () => { const p = $('#panelC'); p.hidden = !p.hidden; $('#bell').setAttribute('aria-expanded', !p.hidden); if (!p.hidden) pintarPanel(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { if ($('#modal')) cerrarModal(); else if (!$('#panelC').hidden) { cerrarPanel(); $('#bell').focus(); } else cerrarMenu(); }
+  if (e.key === 'Tab' && $('#modal')) { const f = [...$('#modal').querySelectorAll('button,select,input,textarea,a[href]')].filter(x => !x.disabled); if (!f.length) return; // trampa de foco
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); } else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); } }
+});
+
+function cargarLogo() { // reemplaza el símbolo solo si la imagen cargó; si falla, el libro SVG se queda
+  if (!LOGO_URL) return;
+  document.querySelectorAll('.simb').forEach(sv => { const im = new Image(); im.className = 'logo-img'; im.alt = 'Logo institucional';
+    im.addEventListener('load', () => sv.replaceWith(im.cloneNode())); im.src = LOGO_URL; });
+}
+cargarLogo();
+generarDatosIniciales(); // una sola vez al cargar
+</script>
 </body>
 </html>
