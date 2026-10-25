@@ -82,6 +82,9 @@ dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0}dt{c
 .pie{font-size:.75rem;color:var(--mu);text-align:center;padding:14px 16px;margin:0}.pie .btn{margin-top:6px}
 .sobre p{margin:0 0 10px}
 .logo-img{width:34px;height:34px;object-fit:contain;background:#fff;border-radius:8px;padding:3px;flex:none}.vis .logo-img{width:56px;height:56px;margin-bottom:10px}.logo .logo-img{width:32px;height:32px}
+
+.attendance{display:flex;gap:6px;flex-wrap:wrap}.attendance button{background:#fff;border:2px solid #cbd5e1;border-radius:8px;padding:7px 10px;font:inherit;cursor:pointer}.attendance button[aria-pressed=true]{font-weight:800;box-shadow:0 0 0 2px #0f172a}.attendance .present{color:#166534;border-color:#86efac}.attendance .late{color:#854d0e;border-color:#fde047}.attendance .absent{color:#991b1b;border-color:#fca5a5}.attendance .present[aria-pressed=true]{background:#dcfce7}.attendance .late[aria-pressed=true]{background:#fef9c3}.attendance .absent[aria-pressed=true]{background:#fee2e2}
+.schedule{table-layout:fixed;min-width:760px}.schedule th{background:#fef08a;color:#0f172a;text-align:center}.schedule td{text-align:center;font-weight:600;height:62px;border:1px solid #cbd5e1;white-space:normal}.schedule .break{background:#f1f5f9;letter-spacing:.12em}.schedule td:first-child{background:#f8fafc;font-size:.8rem;width:110px}.schedule-wrap{max-height:none;margin-bottom:20px}.report{margin-top:16px}.report table{min-width:1000px}.report td{vertical-align:top}.report textarea{min-width:190px;width:100%;font-size:.8rem}.report select{min-width:62px}.report .area{font-weight:700;background:#f1f5f9;width:155px}.report .competence{min-width:270px}.report-head{text-align:center;margin:18px 0}.report-meta{display:flex;gap:12px;flex-wrap:wrap;padding:14px;background:#eff6ff;border-radius:8px}.level{font-weight:800;min-width:38px;text-align:center}.level-AD,.level-A{background:#dcfce7;color:#166534}.level-B{background:#fef9c3;color:#854d0e}.level-C{background:#fee2e2;color:#991b1b}.legend{color:var(--mu);font-size:.85rem;margin:12px 0}.child-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.child-tabs [aria-pressed=true]{background:var(--azul);color:#fff}
 </style>
 </head>
 <body>
@@ -210,7 +213,9 @@ const PERMISOS = {
   ADMINISTRATIVO:{inicio:'general',matriculas:'general',docentes:'general',asistencias:'todas',calificaciones:'todas',justificaciones:'revisar',comunicados:'crear'},
   DOCENTE:{inicio:'propio',asistencias:'aula',calificaciones:'aula',comunicados:'leer'},
   APODERADO:{inicio:'propio',calificaciones:'propio',justificaciones:'propias',comunicados:'leer'}};
-const MODS = [['inicio','Inicio'],['matriculas','Matrículas y grados'],['docentes','Docentes'],['asistencias','Asistencias'],['calificaciones','Calificaciones'],['justificaciones','Justificaciones'],['comunicados','Comunicados']];
+PERMISOS.ADMINISTRATIVO.horarios = 'todas'; PERMISOS.DOCENTE.horarios = 'aula'; PERMISOS.APODERADO.horarios = 'propio';
+ICO.horarios = '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 10h18M8 2v5M16 2v5M9 10v11M15 10v11"/>';
+const MODS = [['horarios','Horario escolar'],['inicio','Inicio'],['matriculas','Matrículas y grados'],['docentes','Docentes'],['asistencias','Asistencias'],['calificaciones','Calificaciones'],['justificaciones','Justificaciones'],['comunicados','Comunicados']];
 let sesion = null;
 const nivel = m => sesion && PERMISOS[sesion.rol][m];
 const puedeAcceder = m => !!nivel(m);
@@ -229,7 +234,7 @@ function iniciarSesion(rol) {
   const e3 = aulaDe(3,'A')[0];
   if (rol === 'ADMINISTRATIVO') sesion = {rol, nombre:'Rosa Quispe Mendoza', detalle:'Administrativo de demostración'};
   else if (rol === 'DOCENTE') { const d = docentesDB[0]; sesion = {rol, nombre:d.nombres + ' ' + d.apellidos, detalle:d.especialidad + ' · 3.º A', aulas:d.aulas}; }
-  else sesion = {rol, nombre:e3.tutor, detalle:'Apoderado de ' + e3.nombres.split(' ')[0] + ' (3.º A)', estId:e3.id};
+  else sesion = {rol, nombre:e3.tutor, detalle:'Apoderado de demostración · 3 hijos vinculados', estId:e3.id, hijos:[e3.id, aulaDe(1,'B')[0].id, aulaDe(5,'C')[0].id]};
   $('#login').hidden = true; const app = $('#app'); app.hidden = false; app.classList.add('entra');
   $('#uNom').textContent = sesion.nombre; $('#uDet').textContent = sesion.detalle; $('#uRol').textContent = rol;
   $('#nav').replaceChildren(...MODS.filter(([m]) => puedeAcceder(m)).map(([m, t]) => h('button', {class:'nav', type:'button', 'data-mod':m}, ico(m), t)));
@@ -251,16 +256,16 @@ function navegarA(m) {
   if (m !== vista) { B = {clave:'', d:{}, sucio:false, inv:new Set()}; $('#busq').value = ''; pag = 1; }
   vista = m; cerrarMenu(); pintar(); $('#main').focus({preventScroll:true}); return true;
 }
-const RENDER = () => ({inicio:renderInicio, matriculas:renderMatriculas, docentes:renderDocentes, asistencias:renderAsistencias, calificaciones:renderCalificaciones, justificaciones:renderJustificaciones, comunicados:renderComunicados})[vista]();
+const RENDER = () => ({inicio:renderInicio, matriculas:renderMatriculas, docentes:renderDocentes, asistencias:renderAsistencias, calificaciones:renderCalificaciones, justificaciones:renderJustificaciones, comunicados:renderComunicados, horarios:renderHorarios})[vista]();
 function pintar() {
   const foco = document.activeElement && document.activeElement.id;
   $('#titulo').textContent = MODS.find(x => x[0] === vista)[1];
   document.querySelectorAll('.nav').forEach(b => b.dataset.mod === vista ? b.setAttribute('aria-current','page') : b.removeAttribute('aria-current'));
   const SP = {matriculas:'Nombre, apellido o DNI',docentes:'Docente o especialidad',asistencias:'Alumno del aula',calificaciones:'Alumno autorizado',comunicados:'Título o contenido',justificaciones:'Estudiante o motivo'};
-  const bq = $('#busq'), off = vista === 'inicio' || (vista === 'calificaciones' && sesion.rol === 'APODERADO');
+  const bq = $('#busq'), off = vista === 'inicio' || vista === 'horarios' || vista === 'calificaciones';
   bq.disabled = off; bq.placeholder = off ? 'Búsqueda no disponible' : 'Buscar: ' + SP[vista];
-  $('#busqAy').textContent = vista === 'inicio' ? 'La búsqueda se activa en los módulos.' : off ? 'Solo ves a tu estudiante.' : '';
-  $('#btnPdf').hidden = !['matriculas','docentes','asistencias','calificaciones','justificaciones'].includes(vista);
+  $('#busqAy').textContent = vista === 'inicio' ? 'La búsqueda se activa en los módulos.' : off ? (sesion.rol === 'APODERADO' ? 'Consulta del estudiante seleccionado.' : 'Utiliza los filtros del módulo.') : '';
+  $('#btnPdf').hidden = !['matriculas','docentes','asistencias','calificaciones','justificaciones','horarios'].includes(vista);
   $('#main').replaceChildren(); RENDER(); actualizarCampana();
   if (foco) { const e = document.getElementById(foco); if (e && e.focus && foco !== 'busq') e.focus(); }
 }
@@ -277,7 +282,8 @@ function renderInicio() {
   let cards;
   if (r === 'ADMINISTRATIVO') cards = [stat(estudiantesDB.length, 'Estudiantes de demostración (total)'), stat(docentesDB.length, 'Docentes de demostración'), stat(pend(justificacionesDB), 'Justificaciones pendientes')];
   else if (r === 'DOCENTE') { const ids = aulaDe(3,'A').map(e => e.id); cards = [stat(ids.length, 'Estudiantes de demostración en 3.º A'), stat(pctAsist(ids), 'Asistencia registrada (presentes)'), stat(calificacionesDB.filter(n => ids.includes(n.estudianteId)).length, 'Notas registradas en 3.º A')]; }
-  else { const ids = [sesion.estId]; cards = [stat(promedio(ids), 'Promedio de notas de tu estudiante'), stat(pctAsist(ids), 'Asistencia de tu estudiante'), stat(pend(justificacionesDB.filter(j => j.estudianteId === sesion.estId)), 'Tus justificaciones pendientes')]; }
+  else { const ids = [sesion.estId]; cards = [stat(nombreEst(estPorId(sesion.estId)), 'Estudiante seleccionado'), stat(pctAsist(ids), 'Asistencia de tu estudiante'), stat(pend(justificacionesDB.filter(j => j.estudianteId === sesion.estId)), 'Tus justificaciones pendientes')]; }
+  if (r === 'APODERADO') m.append(selectorHijos());
   m.append(h('div', {class:'grid3'}, cards), h('h2', {text:'Comunicados de demostración recientes', style:'margin:8px 0 12px'}), h('div', {class:'cards'}, comunicadosRol().slice(0, 3).map(tarjetaCom)),
     h('h2', {text:'Accesos rápidos', style:'margin:20px 0 12px'}), h('div', {class:'row'}, MODS.filter(([k]) => k !== 'inicio' && puedeAcceder(k)).map(([k, t]) => h('button', {class:'btn sec', type:'button', onclick:() => navegarA(k)}, t))));
 }
@@ -307,7 +313,7 @@ function pintarTabla() {
       h('div', {class:'row'}, h('button', {class:'btn sec', type:'button', disabled:pag <= 1, onclick:() => { pag--; pintarTabla(); }, text:'Anterior'}), h('span', {text:`Página ${pag} de ${pags}`}), h('button', {class:'btn sec', type:'button', disabled:pag >= pags, onclick:() => { pag++; pintarTabla(); }, text:'Siguiente'}))));
 }
 function verFicha(e) {
-  abrirModal('Ficha del estudiante', h('dl', {}, ...[['DNI', e.dni], ['Nombres', e.nombres], ['Apellidos', e.apellidos], ['Grado y sección', GR(e.grado) + ' · ' + e.seccion], ['Estado', e.estado], ['Apoderado', e.tutor], ['Asistencia', pctAsist([e.id])], ['Promedio', promedio([e.id])]].flatMap(([k, v]) => [h('dt', {text:k}), h('dd', {text:v})])));
+  abrirModal('Ficha del estudiante', h('dl', {}, ...[['DNI', e.dni], ['Nombres', e.nombres], ['Apellidos', e.apellidos], ['Grado y sección', GR(e.grado) + ' · ' + e.seccion], ['Estado', e.estado], ['Apoderado', e.tutor], ['Asistencia', pctAsist([e.id])], ['Evaluación', 'Por competencias · AD / A / B / C']].flatMap(([k, v]) => [h('dt', {text:k}), h('dd', {text:v})])));
 }
 function exportarCSV() { // exporta TODOS los resultados filtrados
   if (!puedeAcceder('matriculas')) return;
@@ -337,7 +343,7 @@ function renderAsistencias() {
     h('button', {class:'btn sec', type:'button', onclick:() => { lista.forEach(e => B.d[e.id] = 'Presente'); B.sucio = true; pintar(); }, text:'Marcar todos presentes'}),
     h('button', {class:'btn', type:'button', onclick:() => guardarAsistencia(g, s), text:'Guardar asistencia'})),
     h('p', {class:'', text:(guardada ? 'Hay asistencia guardada para esta fecha.' : 'Aún no hay asistencia guardada para esta fecha.') + (B.sucio ? ' Tienes cambios sin guardar.' : ''), style:'color:var(--mu)'}),
-    vis.length ? tabla(['DNI','Estudiante','Asistencia'], vis.map(e => [e.dni, nombreEst(e), h('select', {id:'sa' + e.id, 'aria-label':'Asistencia de ' + nombreEst(e), onchange:ev => { B.d[e.id] = ev.target.value; B.sucio = true; }}, ['Presente','Tardanza','Ausente'].map(o => h('option', {value:o, text:o, selected:B.d[e.id] === o})))])) : vacio('No hay alumnos para mostrar.'));
+    vis.length ? tabla(['DNI','Estudiante','Asistencia'], vis.map(e => [e.dni, nombreEst(e), botonesAsistencia(e)])) : vacio('No hay alumnos para mostrar.'));
 }
 function guardarAsistencia(g, s) {
   if (!puedeAcceder('asistencias') || (sesion.rol === 'DOCENTE' && !(sesion.aulas || []).includes('3A'))) return showToast('No autorizado para modificar asistencias.', 'error');
@@ -347,36 +353,8 @@ function guardarAsistencia(g, s) {
 }
 
 /* ---------- Calificaciones ---------- */
-function renderCalificaciones() {
-  if (sesion.rol === 'APODERADO') return renderNotasApoderado();
-  const adm = sesion.rol === 'ADMINISTRATIVO', g = adm ? +C.g : 3, s = adm ? C.s : 'A', lista = aulaDe(g, s), clave = [g, s, C.curso, C.bim].join('|');
-  if (B.clave !== clave) { B = {clave, d:{}, sucio:false, inv:new Set()}; lista.forEach(e => { const r = calificacionesDB.find(n => n.estudianteId === e.id && n.curso === C.curso && n.bimestre === +C.bim); B.d[e.id] = r ? String(r.nota) : ''; }); }
-  const q = norm($('#busq').value.trim()), vis = lista.filter(e => !q || norm(nombreEst(e) + ' ' + e.dni).includes(q));
-  $('#main').append(h('div', {class:'fil'},
-    campo('cc', 'Curso', sel('cc', CURSOS.map(x => [x, x]), C.curso, v => cambiarSeleccion(() => C.curso = v))),
-    campo('cb', 'Bimestre', sel('cb', [1,2,3,4].map(x => [x, x + '.º bimestre']), C.bim, v => cambiarSeleccion(() => C.bim = +v))),
-    adm ? campo('cg', 'Grado', sel('cg', [1,2,3,4,5].map(x => [x, GR(x)]), C.g, v => cambiarSeleccion(() => C.g = +v))) : null,
-    adm ? campo('cs', 'Sección', sel('cs', SECS.map(x => [x, x]), C.s, v => cambiarSeleccion(() => C.s = v))) : h('div', {class:'campo'}, h('label', {text:'Aula'}), badge('3.º A (fija)', 'azul')),
-    h('button', {class:'btn', type:'button', onclick:() => guardarCalificaciones(g, s, lista), text:'Guardar calificaciones'})),
-    h('p', {text:'Escala 0–20. Un campo vacío significa «Sin calificar».', style:'color:var(--mu)'}),
-    vis.length ? tabla(['DNI','Estudiante','Nota (0–20)'], vis.map(e => { const bad = B.inv.has(e.id);
-      return [e.dni, nombreEst(e), h('input', {id:'n' + e.id, type:'number', min:0, max:20, step:'0.1', value:B.d[e.id], placeholder:'Sin calificar', class:bad ? 'inv' : '', 'aria-invalid':bad ? 'true' : 'false', 'aria-label':'Nota de ' + nombreEst(e), style:'width:130px',
-        oninput:ev => { B.d[e.id] = ev.target.value; B.sucio = true; B.inv.delete(e.id); ev.target.classList.remove('inv'); ev.target.setAttribute('aria-invalid', 'false'); }})]; })) : vacio('No hay alumnos para mostrar.'));
-}
-function guardarCalificaciones(g, s, lista) {
-  if (!puedeAcceder('calificaciones') || nivel('calificaciones') === 'propio') return showToast('No autorizado para modificar notas.', 'error');
-  B.inv = new Set(); lista.forEach(e => { const v = String(B.d[e.id] ?? '').trim(); if (v !== '' && (isNaN(Number(v)) || Number(v) < 0 || Number(v) > 20)) B.inv.add(e.id); });
-  if (B.inv.size) { const p = [...B.inv][0]; pintar(); showToast('Hay ' + B.inv.size + ' nota(s) fuera del rango 0–20. Corrígelas para guardar.', 'error'); const i = document.getElementById('n' + p); if (i) i.focus(); return; }
-  lista.forEach(e => { const v = String(B.d[e.id] ?? '').trim(), i = calificacionesDB.findIndex(n => n.estudianteId === e.id && n.curso === C.curso && n.bimestre === +C.bim);
-    if (v === '') { if (i >= 0) calificacionesDB.splice(i, 1); } else if (i >= 0) calificacionesDB[i].nota = Number(v);
-    else calificacionesDB.push({id:'N' + Date.now() + e.id, estudianteId:e.id, curso:C.curso, bimestre:+C.bim, nota:Number(v)}); });
-  B.sucio = false; showToast('Calificaciones guardadas.', 'ok');
-}
-function renderNotasApoderado() {
-  const e = estPorId(sesion.estId), nota = (c, b) => { const r = calificacionesDB.find(n => n.estudianteId === e.id && n.curso === c && n.bimestre === b); return r ? String(r.nota) : 'Sin calificar'; };
-  $('#main').append(h('p', {text:'Estudiante: ' + nombreEst(e) + ' · ' + GR(e.grado) + ' ' + e.seccion + ' (solo lectura)'}), tabla(['Curso','1.º bim.','2.º bim.','3.º bim.','4.º bim.'], CURSOS.map(c => [c, ...[1,2,3,4].map(b => nota(c, b))])));
-}
-
+/* Evaluaciones por competencia; no se promedian niveles literales. */
+function renderCalificaciones() { renderBoleta(); }
 /* ---------- Justificaciones ---------- */
 function renderJustificaciones() {
   const m = $('#main'), adm = sesion.rol === 'ADMINISTRATIVO', q = norm($('#busq').value.trim());
@@ -430,7 +408,7 @@ function actualizarCampana() {
 function pintarPanel() {
   const l = comunicadosRol();
   $('#panelC').replaceChildren(h('div', {class:'mh'}, h('h2', {text:'Comunicados', style:'font-size:1rem'}), h('button', {class:'btn sm sec', type:'button', onclick:() => { l.forEach(c => leidos.add(kLeido(c))); actualizarCampana(); }, text:'Marcar todos leídos'})),
-    l.map(c => h('div', {style:'border-top:1px solid var(--bd);padding:8px 0'}, h('strong', {text:c.titulo}), ' ', leidos.has(kLeido(c)) ? badge('Leído', 'ok') : badge('Nuevo', 'warn'), h('div', {text:c.contenido, style:'font-size:.85rem;color:var(--mu)'}),
+    ...l.map(c => h('div', {style:'border-top:1px solid var(--bd);padding:8px 0'}, h('strong', {text:c.titulo}), ' ', leidos.has(kLeido(c)) ? badge('Leído', 'ok') : badge('Nuevo', 'warn'), h('div', {text:c.contenido, style:'font-size:.85rem;color:var(--mu)'}),
       leidos.has(kLeido(c)) ? null : h('button', {class:'btn sm sec', type:'button', style:'margin-top:4px', onclick:() => { leidos.add(kLeido(c)); actualizarCampana(); }, text:'Marcar como leído'}))));
 }
 function cerrarPanel() { $('#panelC').hidden = true; $('#bell').setAttribute('aria-expanded', 'false'); }
@@ -441,19 +419,24 @@ function cerrarPanel() { $('#panelC').hidden = true; $('#bell').setAttribute('ar
 function crearPDF(titulo, sub, cab, filas) {
   const W = 842, H = 595, M = 36, FS = 8, LH = 15, ancho = W - 2 * M;
   const esc = t => String(t).replace(/[–—]/g, '-').replace(/[^\x20-\x7e\xa0-\xff]/g, '?').replace(/[\\()]/g, '\\$&'); // solo latin-1
+  const esBoleta = cab[1] === 'Competencia';
   const len = cab.map((c, i) => Math.min(40, Math.max(c.length, 4, ...filas.map(f => String(f[i]).length))));
-  const tot = len.reduce((a, b) => a + b, 0), cw = len.map(l => ancho * l / tot), cx = []; let x0 = M; cw.forEach(w => { cx.push(x0); x0 += w; });
+  const tot = len.reduce((a, b) => a + b, 0), cw = esBoleta ? [120,240,35,35,35,35,270].map(v => v * ancho / 870) : len.map(l => ancho * l / tot), cx = []; let x0 = M; cw.forEach(w => { cx.push(x0); x0 += w; });
   const corta = (t, w) => { t = String(t); const m = Math.max(1, Math.floor((w - 6) / (FS * 0.52))); return t.length > m ? t.slice(0, Math.max(1, m - 3)) + '...' : t; };
-  const pags = []; let i = 0;
-  do { const yTop = pags.length ? H - M : H - M - 56, cap = Math.floor((yTop - LH - M) / LH); pags.push({yTop, filas:filas.slice(i, i + cap)}); i += cap; } while (i < filas.length);
+  const envolver = (valor,w) => { const max=Math.max(3,Math.floor((w-8)/(FS*.55))), lineas=[]; String(valor).split(/\r?\n/).forEach(parrafo=>{ let linea=''; parrafo.split(/\s+/).forEach(palabra=>{ while(palabra.length>max){ if(linea){lineas.push(linea);linea='';} lineas.push(palabra.slice(0,max));palabra=palabra.slice(max); } if((linea+' '+palabra).trim().length>max){lineas.push(linea);linea=palabra;}else linea=(linea+' '+palabra).trim(); });lineas.push(linea); });return lineas; };
+  const pags = []; let pagina={yTop:H-M-56,filas:[]}, usado=LH;
+  filas.forEach(f=>{const lineas=f.map((v,k)=>envolver(v,cw[k])), alto=Math.max(LH,Math.max(...lineas.map(l=>l.length))*10+8);if(usado+alto>pagina.yTop-M){pags.push(pagina);pagina={yTop:H-M,filas:[]};usado=LH;}pagina.filas.push({lineas,alto});usado+=alto;});pags.push(pagina);
   const contenidos = pags.map((p, n) => {
     let s = ''; const txt = (t, x, y, f, sz) => { s += `BT /${f} ${sz} Tf ${x.toFixed(1)} ${y.toFixed(1)} Td (${esc(t)}) Tj ET\n`; };
     if (n === 0) { txt('SIA-Net - ' + titulo, M, H - M - 10, 'F2', 14); txt('I.E. N.° 86002 «Jorge Basadre Grohmann» · Prototipo académico · Datos ficticios', M, H - M - 48, 'F1', 7); txt(sub, M, H - M - 26, 'F1', 9);
       txt('Generado: ' + hoy() + ' ' + new Date().toTimeString().slice(0, 5) + ' | Usuario: ' + sesion.nombre + ' (' + sesion.rol + ') | Registros: ' + filas.length, M, H - M - 38, 'F1', 8); }
     s += `0.12 0.23 0.54 rg ${M} ${p.yTop - LH} ${ancho} ${LH} re f\n1 g\n`; cab.forEach((c, k) => txt(corta(c, cw[k]), cx[k] + 3, p.yTop - LH + 4.5, 'F2', FS)); s += '0 g\n';
-    p.filas.forEach((f, r) => { const yb = p.yTop - LH * (r + 2);
-      if (r % 2) s += `0.96 0.97 0.99 rg ${M} ${yb} ${ancho} ${LH} re f\n0 g\n`;
-      f.forEach((c, k) => txt(corta(c, cw[k]), cx[k] + 3, yb + 4.5, 'F1', FS)); s += `0.85 0.88 0.92 RG ${M} ${yb} m ${M + ancho} ${yb} l S\n`; });
+    let cursor=p.yTop-LH;
+    p.filas.forEach((fila,r)=>{const yb=cursor-fila.alto;
+      if(r%2)s += `0.96 0.97 0.99 rg ${M} ${yb} ${ancho} ${fila.alto} re f\n0 g\n`;
+      fila.lineas.forEach((lineas,k)=>lineas.forEach((linea,j)=>txt(linea,cx[k]+3,cursor-11-j*10,'F1',FS)));
+      s += `0.85 0.88 0.92 RG ${M} ${yb} m ${M+ancho} ${yb} l S\n`;cursor=yb;
+    });
     txt('Página ' + (n + 1) + ' de ' + pags.length, W - M - 70, 20, 'F1', 8); return s;
   });
   const objs = ['<< /Type /Catalog /Pages 2 0 R >>', null, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>', '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'], kids = [];
@@ -467,12 +450,14 @@ function crearPDF(titulo, sub, cab, filas) {
 }
 /* Datos del reporte: Matrículas usa TODOS los resultados filtrados; el resto toma lo que muestra la tabla en pantalla. */
 function datosReporte() {
+  if (vista === 'horarios') return reporteHorario();
+  if (vista === 'calificaciones') return reporteBoleta();
   const tit = MODS.find(x => x[0] === vista)[1];
   if (vista === 'matriculas') { const q = $('#busq').value.trim(), f = [F.grado && GR(F.grado), F.seccion && 'Sección ' + F.seccion, F.estado, q && 'Búsqueda: ' + q].filter(Boolean);
     return {tit, sub:'Filtros: ' + (f.join(' · ') || 'ninguno'), cab:['DNI','Apellidos y nombres','Grado','Sección','Estado','Tutor'], filas:filtrarEstudiantes().map(e => [e.dni, nombreEst(e), GR(e.grado), e.seccion, e.estado, e.tutor])}; }
   const t = $('#main table'); if (!t) return null;
   const cab = [...t.querySelectorAll('thead th')].map(x => x.textContent), skip = cab.map(c => c === 'Acciones' || c === 'Acción');
-  const filas = [...t.querySelectorAll('tbody tr')].map(tr => [...tr.children].map(td => { const c = td.querySelector('select,input'); return c ? (c.tagName === 'SELECT' ? c.value : (c.value || 'Sin calificar')) : td.textContent; }).filter((_, i) => !skip[i]));
+  const filas = [...t.querySelectorAll('tbody tr')].map(tr => [...tr.children].map(td => { const elegido=td.querySelector('.attendance button[aria-pressed="true"]'); if(elegido)return elegido.textContent.replace(/^[^ ]+ /,''); const c = td.querySelector('select,input'); return c ? (c.tagName === 'SELECT' ? c.value : (c.value || 'Sin calificar')) : td.textContent; }).filter((_, i) => !skip[i]));
   const adm = sesion.rol === 'ADMINISTRATIVO', sub = vista === 'asistencias' ? 'Fecha: ' + fd(A.fecha) + ' · Aula: ' + (adm ? GR(A.g) + ' ' + A.s : '3.º A')
     : vista === 'calificaciones' ? C.curso + ' · ' + C.bim + '.º bimestre · Aula: ' + (adm ? GR(C.g) + ' ' + C.s : '3.º A') : tit;
   return {tit, sub, cab:cab.filter((_, i) => !skip[i]), filas};
@@ -509,6 +494,59 @@ function cerrarModal() { const m = $('#modal'); if (m) { m.remove(); if (modalPr
 function showToast(msg, tipo = 'ok') { const t = h('div', {class:'toast ' + tipo, text:msg}); $('#toasts').append(t); setTimeout(() => t.remove(), 4000); }
 function cerrarMenu() { $('#side').classList.remove('open'); $('#ov').classList.remove('show'); $('#menuBtn').setAttribute('aria-expanded', 'false'); }
 
+/* ---------- Horarios y boleta de competencias (demostración local) ---------- */
+const AREAS = {
+ 'Desarrollo Personal, Ciudadanía y Cívica':['Construye su identidad','Convive y participa democráticamente en la búsqueda del bien común'],
+ 'Ciencias Sociales':['Construye interpretaciones históricas','Gestiona responsablemente el espacio y el ambiente','Gestiona responsablemente los recursos económicos'],
+ 'Educación para el Trabajo':['Gestiona proyectos de emprendimiento económico o social'],
+ 'Educación Física':['Se desenvuelve de manera autónoma a través de su motricidad','Asume una vida saludable','Interactúa a través de sus habilidades sociomotrices'],
+ 'Comunicación':['Se comunica oralmente en su lengua materna','Lee diversos tipos de textos escritos en su lengua materna','Escribe diversos tipos de textos en su lengua materna'],
+ 'Arte y Cultura':['Aprecia de manera crítica manifestaciones artístico-culturales','Crea proyectos desde los lenguajes artísticos'],
+ 'Inglés':['Se comunica oralmente en inglés como lengua extranjera','Lee diversos tipos de textos escritos en inglés como lengua extranjera','Escribe diversos tipos de textos en inglés como lengua extranjera'],
+ 'Matemática':['Resuelve problemas de cantidad','Resuelve problemas de regularidad, equivalencia y cambio','Resuelve problemas de forma, movimiento y localización','Resuelve problemas de gestión de datos e incertidumbre'],
+ 'Ciencia y Tecnología':['Indaga mediante métodos científicos para construir conocimientos','Explica el mundo físico basándose en conocimientos sobre los seres vivos, materia y energía, biodiversidad, Tierra y universo','Diseña y construye soluciones tecnológicas para resolver problemas de su entorno'],
+ 'Educación Religiosa':['Construye su identidad como persona humana, amada por Dios, digna, libre y trascendente, comprendiendo la doctrina de su propia religión, abierto al diálogo con las que le son cercanas','Asume la experiencia del encuentro personal y comunitario con Dios en su proyecto de vida en coherencia con su creencia religiosa'],
+ 'Competencias transversales':['Se desenvuelve en los entornos virtuales generados por las TIC','Gestiona su aprendizaje de manera autónoma']
+};
+const LOGROS=['AD','A','B','C'];
+let competenciasDB=[], horarioFiltro={g:3,s:'A'}, boletaFiltro={g:3,s:'A',id:'',bim:1};
+function inicializarCompetencias(){
+ estudiantesDB.forEach((e,i)=>Object.entries(AREAS).forEach(([area,competencias],a)=>competencias.forEach((competencia,c)=>{
+   // Solo el primer bimestre tiene datos ficticios; los restantes están por evaluar.
+   competenciasDB.push({estudianteId:e.id,area,competencia,bimestre:1,nivel:LOGROS[(i+a+c)%4],conclusion:(i+a+c)%4===3?'Requiere acompañamiento y práctica guiada para desarrollar esta competencia.':''});
+ })));
+}
+function hijosSesion(){return (sesion.hijos||[sesion.estId]).map(estPorId).filter(Boolean);}
+function selectorHijos(){return h('div',{class:'card',style:'margin-bottom:16px'},h('strong',{text:'Mis hijos · Selecciona al estudiante'}),h('div',{class:'child-tabs',style:'margin-top:10px'},hijosSesion().map(e=>h('button',{class:'btn sec',type:'button','aria-pressed':String(e.id===sesion.estId),onclick:()=>cambiarSeleccion(()=>sesion.estId=e.id),text:nombreEst(e)+' · '+e.grado+'.º '+e.seccion}))));}
+const DIAS=['Lunes','Martes','Miércoles','Jueves','Viernes'];
+const BLOQUES=[['14:00','14:45'],['14:45','15:30'],['15:30','16:15'],['16:15','16:45'],['16:45','17:30'],['17:30','18:15'],['18:15','19:00'],['19:00','19:45']];
+const PLAN=[['Comunicación','Matemática','Ciencia y Tecnología','Inglés','Matemática'],['Comunicación','Matemática','Ciencia y Tecnología','Inglés','Matemática'],['Educación Física','Comunicación','Ciencias Sociales','Arte y Cultura','Ciencia y Tecnología'],['Recreo','Recreo','Recreo','Recreo','Recreo'],['Educación Física','Comunicación','Ciencias Sociales','Arte y Cultura','Ciencia y Tecnología'],['Desarrollo Personal, Ciudadanía y Cívica','Educación para el Trabajo','Educación Religiosa','Matemática','Comunicación'],['Desarrollo Personal, Ciudadanía y Cívica','Educación para el Trabajo','Educación Religiosa','Ciencias Sociales','Inglés'],['Tutoría','Ciencia y Tecnología','Matemática','Comunicación','Tutoría']];
+const COLORES={'Comunicación':'#fbcfe8','Matemática':'#dbeafe','Ciencia y Tecnología':'#d9f99d','Inglés':'#ddd6fe','Educación Física':'#a5f3fc','Ciencias Sociales':'#fed7aa','Arte y Cultura':'#fef3c7','Educación para el Trabajo':'#ccfbf1','Educación Religiosa':'#f5d0fe','Desarrollo Personal, Ciudadanía y Cívica':'#fecdd3','Tutoría':'#e2e8f0'};
+function horarioAula(g,seccion){const offset=(g-1+SECS.indexOf(seccion))%5;return PLAN.map((fila,i)=>[BLOQUES[i].join(' – '),...DIAS.map((_,d)=>fila[(d+offset)%5])]);}
+function datosHorarioActual(){if(sesion.rol==='APODERADO'){const e=estPorId(sesion.estId);return {g:e.grado,s:e.seccion,e};}return {...horarioFiltro};}
+function renderHorarios(){const m=$('#main');if(sesion.rol==='APODERADO')m.append(selectorHijos());else m.append(h('div',{class:'fil'},campo('hg','Grado',sel('hg',[1,2,3,4,5].map(g=>[g,GR(g)]),horarioFiltro.g,v=>{horarioFiltro.g=+v;pintar();})),campo('hs','Sección',sel('hs',SECS.map(s=>[s,s]),horarioFiltro.s,v=>{horarioFiltro.s=v;pintar();}))));
+ const {g,s,e}=datosHorarioActual();m.append(h('div',{class:'report-head'},h('h2',{text:'HORARIO ESCOLAR · '+GR(g)+' «'+s+'»'}),h('p',{text:'I.E. N.° 86002 “Jorge Basadre Grohmann” · Turno tarde · '+new Date().getFullYear()}),e?h('strong',{text:nombreEst(e)}):null),h('p',{class:'legend',text:'Horario referencial generado por grado y sección. Inicio: 2:00 p. m. · Clases de 45 minutos · Recreo de 4:15 a 4:45 p. m.'}));
+ const t=tabla(['Hora',...DIAS],horarioAula(g,s).map((fila,i)=>fila.map((v,k)=>k===0?v:h('div',{style:'padding:8px;border-radius:6px;background:'+(COLORES[v]||'#f1f5f9'),text:v}))));t.classList.add('schedule-wrap');t.querySelector('table').classList.add('schedule');m.append(t,h('p',{class:'legend',text:'Usa «Descargar PDF» para guardar el horario del aula o del hijo seleccionado.'}));
+}
+function reporteHorario(){const {g,s,e}=datosHorarioActual();return {tit:'Horario escolar '+g+'.º '+s,sub:(e?nombreEst(e)+' · ':'')+'Secundaria · Turno tarde · Horario referencial '+new Date().getFullYear(),cab:['Hora',...DIAS],filas:horarioAula(g,s)};}
+function botonesAsistencia(e){return h('div',{class:'attendance','aria-label':'Asistencia de '+nombreEst(e)},['Presente','Tardanza','Ausente'].map((estado,i)=>h('button',{type:'button',class:['present','late','absent'][i],'aria-pressed':String(B.d[e.id]===estado),'aria-label':estado+' · '+nombreEst(e),onclick:ev=>{B.d[e.id]=estado;B.sucio=true;const grupo=ev.currentTarget.parentElement;grupo.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b===ev.currentTarget));},text:['✓ Presente','◷ Tardanza','✕ Ausente'][i]})));}
+function estudianteBoleta(){if(sesion.rol==='APODERADO')return estPorId(sesion.estId);let lista=aulaDe(boletaFiltro.g,boletaFiltro.s);if(sesion.rol==='DOCENTE')lista=lista.filter(e=>(sesion.aulas||[]).includes(e.grado+e.seccion));return lista.find(e=>e.id===boletaFiltro.id)||lista[0];}
+function registroCompetencia(e,area,competencia,bimestre){return competenciasDB.find(n=>n.estudianteId===e.id&&n.area===area&&n.competencia===competencia&&n.bimestre===bimestre);}
+function renderBoleta(){const m=$('#main'),ap=sesion.rol==='APODERADO';if(ap)m.append(selectorHijos());else{
+ const aulas=sesion.rol==='DOCENTE'?sesion.aulas:[1,2,3,4,5].flatMap(g=>SECS.map(s=>g+s));if(!aulas.includes(boletaFiltro.g+boletaFiltro.s)){boletaFiltro.g=+aulas[0][0];boletaFiltro.s=aulas[0].slice(1);}
+ const lista=aulaDe(boletaFiltro.g,boletaFiltro.s);m.append(h('div',{class:'fil'},campo('baula','Grado y sección',sel('baula',aulas.map(a=>[a,a[0]+'.º '+a.slice(1)]),boletaFiltro.g+boletaFiltro.s,v=>cambiarSeleccion(()=>{boletaFiltro.g=+v[0];boletaFiltro.s=v.slice(1);boletaFiltro.id='';}))),campo('best','Estudiante',sel('best',lista.map(e=>[e.id,nombreEst(e)]),estudianteBoleta()?.id||'',v=>cambiarSeleccion(()=>boletaFiltro.id=v)))));
+ }
+ const e=estudianteBoleta();if(!e){m.append(vacio('No hay estudiantes en esta aula.'));return;}
+ m.append(h('div',{class:'fil'},campo('bbim','Conclusión descriptiva del bimestre',sel('bbim',[1,2,3,4].map(b=>[b,b+'.º bimestre']),boletaFiltro.bim,v=>cambiarSeleccion(()=>boletaFiltro.bim=+v))),ap?null:h('button',{class:'btn',type:'button',text:'Guardar boleta',onclick:guardarBoleta})),h('div',{class:'report-head'},h('h2',{text:'INFORME DE PROGRESO DEL ESTUDIANTE · '+new Date().getFullYear()}),h('p',{text:'I.E. N.° 86002 “Jorge Basadre Grohmann” · Secundaria'})),h('div',{class:'report-meta'},h('strong',{text:nombreEst(e)}),h('span',{text:'DNI: '+e.dni}),h('span',{text:GR(e.grado)+' · Sección '+e.seccion})),h('p',{class:'legend',text:'AD: logro destacado · A: logro esperado · B: en proceso · C: en inicio · —: sin evaluar. No se promedian niveles literales. Datos ficticios; formato referencial, sin validación oficial.'}));
+ const clave='boleta|'+e.id+'|'+boletaFiltro.bim;if(B.clave!==clave)B={clave,d:{},sucio:false,inv:new Set()};
+ const filas=[];Object.entries(AREAS).forEach(([area,competencias])=>competencias.forEach((competencia,c)=>{const key=area+'|'+c;
+ if(!B.d[key])B.d[key]={niveles:[1,2,3,4].map(b=>registroCompetencia(e,area,competencia,b)?.nivel||''),conclusion:registroCompetencia(e,area,competencia,boletaFiltro.bim)?.conclusion||''};const draft=B.d[key];
+ filas.push([c===0?h('strong',{text:area}):'',competencia,...[1,2,3,4].map(b=>ap?badge(draft.niveles[b-1]||'—',draft.niveles[b-1]==='C'?'bad':draft.niveles[b-1]==='B'?'warn':'azul'):h('select',{'aria-label':area+' · '+competencia+' · '+b+'.º bimestre',class:'level level-'+draft.niveles[b-1],onchange:ev=>{draft.niveles[b-1]=ev.target.value;B.sucio=true;ev.target.className='level level-'+ev.target.value;}},['',...LOGROS].map(n=>h('option',{value:n,selected:n===draft.niveles[b-1],text:n||'—'})))),ap?(draft.conclusion||'—'):h('textarea',{rows:3,'aria-label':'Conclusión de '+competencia,placeholder:'Describe el progreso y las recomendaciones',oninput:ev=>{draft.conclusion=ev.target.value;B.sucio=true;}},draft.conclusion)]);
+ }));const t=tabla(['Área curricular','Competencia','I bim.','II bim.','III bim.','IV bim.','Conclusión · '+boletaFiltro.bim+'.º bim.'],filas);t.classList.add('report');t.querySelectorAll('tbody tr').forEach(tr=>{tr.children[0].classList.add('area');tr.children[1].classList.add('competence');});m.append(t,h('p',{class:'legend',text:'Los cambios se conservan durante esta demostración y se pierden al recargar. El PDF usa únicamente la boleta guardada.'}));
+}
+function guardarBoleta(){if(sesion.rol==='APODERADO'||!puedeAcceder('calificaciones'))return;const e=estudianteBoleta();Object.entries(AREAS).forEach(([area,cs])=>cs.forEach((competencia,c)=>{const draft=B.d[area+'|'+c];[1,2,3,4].forEach(b=>{let r=registroCompetencia(e,area,competencia,b);if(!r){r={estudianteId:e.id,area,competencia,bimestre:b,nivel:'',conclusion:''};competenciasDB.push(r);}r.nivel=draft.niveles[b-1];if(b===boletaFiltro.bim)r.conclusion=draft.conclusion;});}));B.sucio=false;showToast('Boleta por competencias guardada en la demostración.');}
+function reporteBoleta(){if(B.sucio){showToast('Guarda la boleta antes de descargar el PDF.','info');return null;}const e=estudianteBoleta();if(!e)return null;return {tit:'Informe de progreso del estudiante',sub:nombreEst(e)+' · DNI '+e.dni+' · '+GR(e.grado)+' '+e.seccion+' · Conclusiones del '+boletaFiltro.bim+'.º bimestre',cab:['Área curricular','Competencia','I','II','III','IV','Conclusión descriptiva'],filas:Object.entries(AREAS).flatMap(([area,cs])=>cs.map(competencia=>[area,competencia,...[1,2,3,4].map(b=>registroCompetencia(e,area,competencia,b)?.nivel||'—'),registroCompetencia(e,area,competencia,boletaFiltro.bim)?.conclusion||'—']))};}
+
 /* ---------- Eventos (una sola vez: sin listeners duplicados) ---------- */
 $('#fLogin').addEventListener('submit', e => { e.preventDefault(); const s = $('#rolSel'); if (!s.value) { $('#rolErr').textContent = 'Selecciona un rol para continuar.'; s.classList.add('inv'); s.focus(); return; } s.classList.remove('inv'); iniciarSesion(s.value); });
 $('#btnSalir').addEventListener('click', cerrarSesion);
@@ -532,6 +570,7 @@ function cargarLogo() { // reemplaza el símbolo solo si la imagen cargó; si fa
 }
 cargarLogo();
 generarDatosIniciales(); // una sola vez al cargar
+inicializarCompetencias();
 </script>
 </body>
 </html>
