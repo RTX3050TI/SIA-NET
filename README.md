@@ -1,189 +1,198 @@
 # SIA-Net · Sistema de Información Académica
 
-Prototipo académico para la **I.E. N.° 86002 “Jorge Basadre Grohmann”** (Nicrupampa · Independencia · Huaraz · Áncash), alcance **Secundaria 1.º–5.º**.
+Prototipo académico de una interfaz para la **I.E. N.° 86002 “Jorge Basadre Grohmann”**, ubicada en Nicrupampa, Independencia, Huaraz, Áncash. El alcance de la demostración comprende **Secundaria, de 1.º a 5.º grado**.
 
-> ⚠️ **Datos ficticios.** No es una plataforma oficial, no cuenta con autorización institucional y no se conecta a los sistemas de la institución. Los 330 estudiantes son población simulada.
+> **Solo es un prototipo con datos ficticios.** No es una plataforma oficial, no cuenta con autorización institucional y no se conecta con sistemas de la institución ni del Minedu. Los nombres, DNI, estudiantes, docentes, registros y horarios son de demostración.
 
----
+## Cómo utilizarlo
 
-## 1. Qué es y cómo se usa
+1. Descarga el repositorio o clónalo en tu computadora.
+2. Abre `index.html` en un navegador moderno. No requiere instalación de paquetes ni servidor.
+3. Selecciona un perfil: **Administrativo**, **Docente** o **Apoderado**. El ingreso no utiliza contraseñas.
+4. Recorre los módulos del menú lateral y prueba los registros.
+5. Usa **Descargar PDF** en los módulos que ofrecen reportes.
 
-Un único archivo `index.html` (HTML + CSS + JavaScript, sin frameworks ni servidor). Se abre con doble clic.
+**Los cambios solo se guardan en la memoria de la pestaña.** Se mantienen al cambiar de módulo o de perfil dentro de la misma página, pero desaparecen al recargarla o cerrarla. No se utiliza una base de datos, `localStorage` ni una API.
 
-1. Elige un rol en el login: **Administrativo**, **Docente** o **Apoderado** (no hay contraseñas).
-2. Navega por el menú lateral; cada rol ve solo sus módulos.
-3. Los cambios (asistencias, notas, justificaciones, comunicados) viven **en memoria**: al recargar, la demostración se restablece.
-4. En los módulos con tabla, el botón **Descargar PDF** genera un reporte.
+## Funciones disponibles
+
+| Módulo | Funciones del prototipo |
+|---|---|
+| Inicio | Indicadores de demostración y comunicados recientes según el perfil. |
+| Matrículas y grados | Consulta de 330 estudiantes ficticios; búsqueda por nombre o DNI; filtros por grado, sección y estado; ficha del estudiante; paginación; exportación CSV y PDF. |
+| Docentes | Consulta de 10 docentes ficticios, especialidades y aulas asignadas. |
+| Horario escolar | Horario semanal referencial por grado y sección, cursos con colores, turno tarde y exportación PDF. |
+| Asistencias | Registro diario con botones de **Presente**, **Tardanza** y **Ausente**; guardado temporal y reporte PDF. |
+| Calificaciones | Boleta por estudiante con **28 competencias**, cuatro bimestres, niveles de logro y conclusiones descriptivas. |
+| Justificaciones | Creación de solicitudes por el apoderado y aprobación o rechazo por el administrativo. |
+| Comunicados | Publicación por el administrativo y consulta según los perfiles destinatarios. |
+| Notificaciones | Panel de comunicados con estados leído/nuevo, contador y opción para marcar todos como leídos. |
+
+### Perfiles y accesos
 
 | Módulo | Administrativo | Docente | Apoderado |
 |---|---|---|---|
-| Inicio | Sí | Sí | Sí |
-| Matrículas y grados | Sí | No | No |
-| Docentes | Sí | No | No |
-| Asistencias | Todas las aulas | Solo 3.º A | No |
-| Calificaciones | Todas las aulas | Solo 3.º A | Solo su estudiante (lectura) |
-| Justificaciones | Revisar | No | Crear y consultar las propias |
-| Comunicados | Consultar y crear | Consultar | Consultar |
+| Inicio | General | Su aula de demostración | Hijo seleccionado |
+| Matrículas y grados | Consulta y exportación | — | — |
+| Docentes | Consulta | — | — |
+| Horario escolar | Consulta por grado y sección | Consulta por grado y sección | Horario de cada hijo vinculado |
+| Asistencias | Todas las aulas | Registro en 3.º A | Porcentaje de asistencia en Inicio |
+| Calificaciones | Registro por estudiante y aula | Registro en sus aulas de demostración | Boleta de cada hijo, en lectura |
+| Justificaciones | Revisar, aprobar o rechazar | — | Crear y consultar las del hijo seleccionado |
+| Comunicados | Crear y consultar | Consultar los dirigidos a su perfil | Consultar los dirigidos a su perfil |
 
-```mermaid
-flowchart LR
-  L[Login: elegir rol] --> D[Dashboard]
-  D --> N{navegarA modulo}
-  N -->|puedeAcceder = no| T[Toast de error]
-  N -->|puedeAcceder = sí| V[Vista del módulo]
-  V --> G[Guardar en arrays en memoria]
-  G --> K[Toast de confirmación]
-  V --> P[Descargar PDF]
-```
+Los permisos del menú se simulan con JavaScript. **No representan una barrera de seguridad real**: el navegador contiene los datos y la lógica del prototipo.
 
----
+### Horarios escolares
 
-## 2. Colores y para qué sirven
+- Se organizan de **lunes a viernes**, por grado y sección.
+- Las clases comienzan a las **2:00 p. m.** y finalizan a las **7:45 p. m.**
+- Los bloques de clase duran 45 minutos.
+- El recreo está previsto de **4:15 a 4:45 p. m.**
+- Cada curso tiene un color para facilitar su identificación.
+- El apoderado de demostración tiene **tres hijos vinculados**, en **3.º A, 1.º B y 5.º C**. Puede alternar entre ellos y descargar el horario correspondiente.
 
-<p align="center"><img src="assets/paleta.svg" alt="Paleta animada de colores de SIA-Net" width="760"></p>
+Los horarios se calculan a partir de una matriz de cursos de ejemplo. **No son horarios oficiales ni incluyen validación de disponibilidad o cruces entre docentes.**
 
-| Color | Código | Dónde se usa |
+### Asistencia mediante botones
+
+| Estado | Color | Identificación |
 |---|---|---|
-| Sidebar | `#0f172a` | Menú lateral y texto principal. Transmite sobriedad y da contraste. |
-| Azul corporativo | `#1e3a8a` | Botones principales, módulo activo, títulos y cabecera de tablas en PDF. |
-| Azul hover | `#2749b5` | Estado al pasar el cursor sobre botones. |
-| Fondo | `#f8fafc` | Fondo general; las tarjetas blancas resaltan encima. |
-| Bordes | `#e2e8f0` | Líneas de tarjetas, tablas y campos. |
-| Verde (`#dcfce7` / `#166534`) | — | Estados favorables: *Matriculado, Presente, Aprobada*. |
-| Amarillo (`#fef9c3` / `#854d0e`) | — | Pendientes: *Tardanza, Pendiente*. |
-| Rojo (`#fee2e2` / `#991b1b`) | — | Alertas: *Retirado, Ausente, Rechazada*, campos inválidos. |
+| Presente | Verde | ✓ Presente |
+| Tardanza | Amarillo | ◷ Tardanza |
+| Ausente | Rojo | ✕ Ausente |
 
-Regla simple: **verde = bien, amarillo = atención/pendiente, rojo = alerta**. El color nunca es la única señal: cada badge incluye texto. Es una propuesta visual del prototipo, no la identidad oficial del colegio.
+Cada estudiante tiene un único estado seleccionado para la fecha. Los botones incluyen texto y estado accesible, además del color. Los cambios se aplican al pulsar **Guardar asistencia**.
 
----
+### Boleta por competencias y bimestres
 
-## 3. Cómo funciona por dentro
+La boleta toma como referencia visual un informe de progreso del estudiante y organiza la evaluación por **área curricular, competencia y cuatro bimestres**.
 
-```mermaid
-flowchart TB
-  subgraph Memoria["Datos en memoria (window)"]
-    E[estudiantesDB 330]
-    DO[docentesDB 10]
-    CO[comunicadosDB]
-    J[justificacionesDB]
-    AS[asistenciasDB]
-    CA[calificacionesDB]
-  end
-  GEN[generarDatosIniciales una vez] --> Memoria
-  Memoria --> R[Funciones render]
-  R --> UI[Interfaz]
-  UI -->|eventos addEventListener| H[Manejadores + permisos]
-  H --> Memoria
-```
-
-- **Relaciones:** asistencias, notas y justificaciones apuntan al estudiante por `estudianteId`; guardar actualiza el registro existente, sin duplicados.
-- **Seguridad de interfaz:** los textos de usuario se insertan con `textContent`, nunca con `innerHTML`.
-- **Permisos:** objeto `PERMISOS` + `puedeAcceder()`, comprobado al navegar y antes de guardar.
-  **Esto es solo una simulación de interfaz: en una aplicación real la autorización debe validarse en el servidor.**
-- **PDF:** generador propio en JavaScript puro; Matrículas exporta todos los resultados filtrados.
-- **Logo:** constante `LOGO_URL` opcional; si falta o no carga, se usa un símbolo de libro SVG.
-
----
-
-## 4. Plan para pasar a nivel servidor
-
-<p align="center"><img src="assets/flujo.svg" alt="Animación del flujo navegador, servidor y base de datos" width="800"></p>
-
-### 4.1 Arquitectura propuesta
-
-| Capa | Propuesta |
+| Nivel | Descripción |
 |---|---|
-| Frontend | Mantener la SPA; reemplazar los arrays por llamadas `fetch` a la API. |
-| API | Node.js con Fastify o Express, rutas REST bajo `/api/v1`. |
-| Base de datos | PostgreSQL con migraciones (Prisma o similar). |
-| Autenticación | Sesión con cookie `HttpOnly` + `Secure` + `SameSite`; contraseñas con Argon2. |
-| Validación | Esquemas (zod) en cada endpoint. |
-| Despliegue | Contenedor Docker, HTTPS, copias de seguridad automáticas. |
+| AD | Logro destacado |
+| A | Logro esperado |
+| B | En proceso |
+| C | En inicio |
+| — | Sin evaluar |
 
-### 4.2 Modelo de datos
+Incluye 28 competencias distribuidas entre las áreas de Secundaria y las competencias transversales. El primer bimestre contiene niveles ficticios; los demás comienzan sin evaluar. Las conclusiones descriptivas se registran para el bimestre seleccionado.
 
-```mermaid
-erDiagram
-  USUARIO ||--o| DOCENTE : es
-  USUARIO ||--o| APODERADO : es
-  APODERADO ||--|{ ESTUDIANTE : representa
-  AULA ||--|{ ESTUDIANTE : contiene
-  DOCENTE }o--o{ AULA : "asignado a"
-  ESTUDIANTE ||--o{ ASISTENCIA : registra
-  ESTUDIANTE ||--o{ CALIFICACION : obtiene
-  ESTUDIANTE ||--o{ JUSTIFICACION : solicita
-  USUARIO ||--o{ COMUNICADO : publica
-  USUARIO { int id string correo string hash string rol }
-  ESTUDIANTE { int id string dni string nombres string estado }
-  ASISTENCIA { int id date fecha string estado }
-  CALIFICACION { int id string curso int bimestre float nota }
+El administrativo y el docente pueden editar y pulsar **Guardar boleta**. El apoderado consulta la información de cada hijo. Para descargar el PDF, primero deben guardarse los cambios pendientes.
+
+**Los niveles literales no se promedian.** La boleta es referencial y no constituye un documento oficial, una validación del Minedu ni una integración con SIAGIE.
+
+Referencia de la escala: [publicación del Ministerio de Educación sobre niveles AD, A, B y C](https://www.gob.pe/institucion/minedu/noticias/880490-colegios-utilizaran-este-ano-escala-literal-para-calificar-a-estudiantes).
+
+## Estructura del repositorio
+
+```text
+.
+├── index.html          # Aplicación: HTML, estilos y JavaScript integrados
+├── style.css           # Archivo de estilos adicional; index.html no lo enlaza actualmente
+├── README.md           # Documentación del prototipo
+└── assets/
+    ├── paleta.svg      # Referencia visual de colores del README
+    └── flujo.svg       # Flujo de datos del prototipo
 ```
 
-Restricciones clave: `dni` único, `UNIQUE(estudiante, fecha)` en asistencias y `UNIQUE(estudiante, curso, bimestre)` en notas (el equivalente servidor de “sin duplicados”).
+La carpeta se llama **`assets`**. Sus imágenes documentan el proyecto; no son necesarias para ejecutar la aplicación. La interfaz principal está implementada en `index.html`.
 
-### 4.3 Endpoints principales
+## Cómo funciona el código
 
-| Método | Ruta | Permiso |
-|---|---|---|
-| POST | `/auth/login`, `/auth/logout` | Público / sesión |
-| GET | `/estudiantes?grado&seccion&estado&q&pagina` | Administrativo |
-| GET | `/estudiantes/export.csv` | Administrativo |
-| PUT | `/asistencias/:aula/:fecha` | Administrativo; docente de esa aula |
-| PUT | `/calificaciones/:aula/:curso/:bimestre` | Administrativo; docente de esa aula |
-| GET | `/mis-hijos/calificaciones` | Apoderado (solo su estudiante) |
-| POST/PATCH | `/justificaciones`, `/justificaciones/:id` | Apoderado crea; administrativo resuelve |
-| GET/POST | `/comunicados` | Según rol |
-| GET | `/reportes/:modulo.pdf` | Según módulo |
+El proyecto utiliza **HTML, CSS y JavaScript nativo**, sin frameworks. Funciona como una SPA: cambia el contenido de la vista mediante el DOM sin cargar una página distinta por módulo.
 
-### 4.4 Guardado seguro (ejemplo)
+![Flujo de datos en memoria del prototipo](assets/flujo.svg)
 
-```mermaid
-sequenceDiagram
-  participant U as Docente (navegador)
-  participant A as API
-  participant B as Base de datos
-  U->>A: PUT /asistencias/3A/2026-10-20 (cookie de sesión)
-  A->>A: ¿Sesión válida? ¿Rol y aula autorizados?
-  A->>A: Validar estados y fecha
-  A->>B: UPSERT por (estudiante, fecha)
-  B-->>A: OK
-  A->>B: Registrar auditoría (quién, cuándo)
-  A-->>U: 200 + datos guardados
-  U->>U: Toast de éxito
+### Arreglos de objetos en JavaScript
+
+Los datos se almacenan en **arreglos (`arrays`) de objetos**. El sufijo `DB` identifica las colecciones de la demostración; **no significa que exista una base de datos real**.
+
+| Arreglo | Contenido |
+|---|---|
+| `estudiantesDB` | 330 estudiantes: 5 grados × 3 secciones × 22 estudiantes. |
+| `docentesDB` | 10 docentes ficticios y sus aulas asignadas. |
+| `asistenciasDB` | Estudiante, fecha y estado de asistencia. |
+| `competenciasDB` | Estudiante, área, competencia, bimestre, nivel y conclusión descriptiva. |
+| `justificacionesDB` | Solicitudes, motivos y estados de revisión. |
+| `comunicadosDB` | Títulos, contenidos, fechas y perfiles destinatarios. |
+| `calificacionesDB` | Datos numéricos de la versión inicial que todavía conserva el código; la nueva boleta utiliza `competenciasDB`. |
+
+Ejemplo ilustrativo de un registro de competencia:
+
+```js
+{
+  estudianteId: 'E001',
+  area: 'Matemática',
+  competencia: 'Resuelve problemas de cantidad',
+  bimestre: 1,
+  nivel: 'A',
+  conclusion: 'Explica las estrategias que utiliza.'
+}
 ```
 
-### 4.5 Fases
+Las colecciones se consultan mediante métodos como `filter()`, `find()` y `map()`. Los registros se agregan o actualizan en memoria. La relación con el estudiante se realiza mediante `estudianteId`.
 
-```mermaid
-gantt
-  title Hoja de ruta sugerida
-  dateFormat  YYYY-MM-DD
-  axisFormat  %d/%m
-  section Base
-  Diseño de BD y API           :a1, 2026-11-02, 14d
-  Autenticación y roles        :a2, after a1, 10d
-  section Módulos
-  Matrículas y docentes        :b1, after a2, 10d
-  Asistencias y calificaciones :b2, after b1, 14d
-  Justificaciones y comunicados:b3, after b2, 10d
-  section Cierre
-  Reportes PDF/CSV en servidor :c1, after b3, 7d
-  Pruebas, seguridad y piloto  :c2, after c1, 14d
-```
+### Datos aleatorios y reproducibilidad
 
-### 4.6 Seguridad y cumplimiento
+`generarDatosIniciales()` crea los datos ficticios al cargar la página. Utiliza un generador **pseudoaleatorio con semilla fija (`20260`)**, por lo que los nombres y otros datos de ejemplo se generan de forma reproducible. No se consulta información real de alumnos.
 
-- Autorización **siempre en el servidor** (el RBAC del prototipo no protege nada por sí solo).
-- Protección de datos personales de menores: minimizar datos, cifrar en tránsito, definir retención y accesos; revisar la normativa peruana de protección de datos personales con el área legal de la institución.
-- Registro de auditoría de cambios en notas y asistencias; copias de seguridad probadas.
-- Pruebas automáticas de permisos (cada rol intenta acceder a lo que no debe).
-- Cualquier integración con sistemas oficiales (por ejemplo, del Minedu) requiere **autorización formal de la institución**; el prototipo no la asume.
+No todo se genera al azar:
 
----
+- Los comunicados y algunas solicitudes parten de ejemplos predefinidos.
+- Las fechas de asistencia se calculan a partir de la fecha local del navegador.
+- `inicializarCompetencias()` asigna niveles ficticios mediante un patrón determinista.
+- `horarioAula()` adapta una matriz predefinida (`PLAN`) según grado y sección.
+- La vinculación de los tres hijos del apoderado está predefinida para la demostración.
 
-## 5. Limitaciones actuales
+Por eso, **recargar restablece la demostración; no genera necesariamente una población diferente cada vez**.
 
-- Todo se pierde al recargar (por diseño).
-- No hay autenticación real ni contraseñas.
-- Sin logo oficial verificado: se usa un símbolo neutro (configurable con `LOGO_URL`).
-- Contactos y autoridades de la institución no se muestran porque no se verificaron en una fuente institucional.
+### Interfaz y exportaciones
+
+- `PERMISOS` y `puedeAcceder()` controlan las vistas disponibles para cada perfil.
+- Las funciones de renderizado construyen las vistas mediante nodos DOM.
+- Los textos ingresados por el usuario se insertan como texto, sin interpretarlos como HTML.
+- Los reportes PDF se generan en el navegador con JavaScript, sin una librería externa de PDF.
+- Las tablas PDF ajustan los textos largos y repiten los encabezados al cambiar de página.
+- La exportación de matrículas genera un archivo **CSV**, que puede abrirse en Excel; no genera un archivo `.xlsx`.
+- `LOGO_URL` configura una imagen externa. Si no carga, se mantiene el símbolo de libro. Su carga requiere conexión a internet.
+
+## Colores de la interfaz
+
+![Paleta de colores de SIA-Net](assets/paleta.svg)
+
+| Uso | Color |
+|---|---|
+| Menú lateral y texto principal | `#0f172a` |
+| Botones principales y títulos | `#1e3a8a` |
+| Botones al pasar el cursor | `#2749b5` |
+| Fondo general | `#f8fafc` |
+| Bordes | `#e2e8f0` |
+| Presente / aprobado | `#dcfce7` y `#166534` |
+| Tardanza / pendiente | `#fef9c3` y `#854d0e` |
+| Ausente / rechazado | `#fee2e2` y `#991b1b` |
+
+Esta paleta es una propuesta visual del prototipo y no representa una identidad institucional oficial.
+
+## Limitaciones actuales
+
+- No hay backend, base de datos, autenticación real ni contraseñas.
+- Los cambios y las notificaciones leídas se pierden al recargar.
+- Las pestañas o computadoras no comparten datos.
+- La matrícula es una consulta: todavía no permite realizar un proceso completo de inscripción.
+- La estructura académica y los periodos no tienen administración completa.
+- No se ha implementado el registro de conducta ni la alerta automática por tres faltas injustificadas consecutivas.
+- Aprobar una justificación cambia su estado, pero no modifica la asistencia vinculada.
+- No hay auditoría inalterable, firma digital, validación oficial de boletas ni flujo formal de rectificación de notas.
+- No se acreditan disponibilidad en la nube ni capacidad para 300 usuarios simultáneos.
+
+## Próximos pasos
+
+1. Incorporar una API y una base de datos para conservar y compartir los registros.
+2. Implementar autenticación y autorización en el servidor.
+3. Administrar usuarios, vínculos entre apoderados e hijos, matrículas y periodos escolares.
+4. Relacionar las justificaciones aprobadas con las faltas y desarrollar las alertas de ausentismo.
+5. Incorporar conducta, historial de cambios y validación de informes de progreso.
+6. Validar horarios, asignaciones docentes y reglas académicas con los responsables de la institución.
+
+Publicar este repositorio en GitHub o servirlo como sitio estático **no convierte los arreglos en una base de datos ni agrega un servidor de aplicación**. Continuará funcionando como una demostración en el navegador.
